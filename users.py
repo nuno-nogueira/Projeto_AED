@@ -97,7 +97,7 @@ class Sign_Up():
     
 #       Abre-se o ficheiro onde estão presentes as informações dos utilizadores em modo leitura para verificar se o username que o utilizador inseriu já está presente no ficheiro
       
-        f = open(Path('')/'Projeto_AED'/'files'/'users.txt','r')
+        f = open(Path('../Projeto_AED/files/users.txt'),'r')
         self.conteudo = f.readlines() # Lê todo o conteudo presente no ficheiro 'users.txt'
         f.close() # Fecha o ficheiro
 
@@ -195,7 +195,7 @@ class Login():
             return
 
 #       Abre-se o ficheiro 'users.txt' em modo leitura
-        f = open('./files/users.txt','r')
+        f = open(Path('../Projeto_AED/files/users.txt'),'r')
         self.conteudo = f.readlines() # A variável 'conteudo' vai buscar toda a informação escrita no ficheiro
         f.close() # Fechar o ficheiro
 

@@ -26,10 +26,9 @@ class App():
 #       Botão para passar para o frame para fazer login!
         self.login_button = Button(self.window, text = 'Login',bg = 'lightblue', fg = 'white', font = ('Roboto', 25), command = self.go_to_login).place(x = 575, y = 350)
 
-        path = "../Projeto_AED/images/icons/logout_icon.png"
-        path = os.path.abspath(path)
+       
 #       Botão com um icon para o utilizador sair da app
-        icon = Image.open(path).resize((80,80)) # platfmor independet
+        icon = Image.open(Path('../Projeto_AED/images/icons/logout_icon.png')).resize((80,80)) # platfmor independet
         icon = ImageTk.PhotoImage(icon)
         self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
         self.leave_app_btn.image = icon

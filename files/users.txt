@@ -1,14 +1,4 @@
-123@11;123;123
 sandra@admin;sandra;123
 nuno@admin;nuno;456
 ken@admin;ken;789
-teste@teste123;ola123;pass
-teste2@esta_a_dar;achoquesim;check
-teste3@email;test3;333
-teste@classe;classe1;class
-teste2@classe;classe2;class
-teste3@classe;classe3;class
-teste4@classe;teste4;class
-user@123;user1;123
-teste5@123;teste5;54321
-teste_nuno@123;_teste_;teste_123
+teste1@123;teste1;1

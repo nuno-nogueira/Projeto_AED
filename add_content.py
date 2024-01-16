@@ -23,14 +23,11 @@ class Add_Post():
     self.username = username
 
 #   Icon para voltar á página principal
-    os.chdir('images')
-    os.chdir('icons')
-    icon = Image.open('go_back_icon.png').resize((50, 50))
+    icon = Image.open(Path('../Projeto_AED/images/icons/go_back_icon.png')).resize((50, 50))
     icon = ImageTk.PhotoImage(icon)
     self.go_back_btn = Button(self.tl_add_photo, image = icon, bd = 0, bg = 'lightgrey', command = self.go_back)
     self.go_back_btn.image = icon
     self.go_back_btn.place(x = 0, y = 0)
-    os.chdir('..\\..') # Voltar duas pastas atrás
 
 #   Label
     self.add_post_lbl = Label(self.tl_add_photo, text = 'Add Post', font = ('Roboto', 28), bg = 'lightgrey').place(x = 100, y = 10)
@@ -51,15 +48,13 @@ class Add_Post():
     self.photo_name = Entry(self.tl_add_photo, width = 25, font = ('Roboto', 14))
     self.photo_name.place(x = 70, y = 400)
 
-    user_dir = os.chdir('users_photoalbums')
-    user_dir = os.chdir(self.username)
-    self.albums_list = os.listdir()
-    os.chdir('..\\..') # Voltar duas pastas atrás
+    user_dir = "../Projeto_AED/users_photoalbums/" + self.username
+    self.albums_list = os.listdir(Path(user_dir))
 #   Label, Combobox com todos albuns do utilizador e um botão para criar um álbum que leva a outra janela
     self.add_to_album_lbl = Label(self.tl_add_photo, text = 'Add to Album:', font = ('Roboto', 18), bg = 'lightgrey').place(x = 70, y = 450)
     self.add_to_album = Combobox(self.tl_add_photo, height = 1, width = 15, values = self.albums_list, font = ('Roboto', 14))
     self.add_to_album.place(x = 70, y = 480)
-    self.create_album = Button(self.tl_add_photo, text = 'Create Album', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = lambda:self.go_to_albums(homepage)).place(x = 270, y = 480)
+    self.create_album = Button(self.tl_add_photo, text = 'Create Album', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = lambda:self.go_to_albums(homepage, username)).place(x = 270, y = 480)
 
 #   Label & Text da descrição da fotografia/post
     self.description_lbl = Label(self.tl_add_photo, text = 'Description', font = ('Roboto', 18), bg = "lightgrey").place(x = 600, y = 50)
@@ -67,11 +62,9 @@ class Add_Post():
     self.description.place(x = 600, y = 100)
   
 #   Para ir buscar as categorias existentes ao ficheiro da categorias
-    os.chdir('files')
-    f = open('categorias.txt','r')
+    f = open(Path('../Projeto_AED/files/categorias.txt'),'r')
     categories = f.readlines()
     f.close()
-    os.chdir('..\\') # Voltar uma pasta atrás
 #   Lista que vai conter as categorias sem o '\n'
 #   Não dá para fazer isso para a lista "categories", porque crasha.
     self.category_list = []
@@ -152,10 +145,12 @@ class Add_Post():
      self.tl_add_photo.destroy()
  
 
-  def go_to_albums(self, homepage):
+  def go_to_albums(self, homepage, username):
     """
     Esta função destroi a janela atual, e cria a uma janela para o utilizador criar um
     """
+    self.username = username
+
     self.tl_add_photo.destroy()
     self.tl_create_album = Toplevel(homepage)
     self.tl_create_album.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
@@ -163,7 +158,7 @@ class Add_Post():
     self.tl_create_album.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
     self.tl_create_album.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
     self.tl_create_album.configure(bg = 'lightgrey')
-    Create_Album(self.tl_create_album)
+    Create_Album(self.tl_create_album, username)
      
 
   def create_post(self):
@@ -187,11 +182,12 @@ class Add_Post():
         file.close()
 
 class Create_Album():
-  def __init__(self, tl_create_album):
+  def __init__(self, tl_create_album, username):
     self.tl_create_album = tl_create_album
+    self.username = username
 
     #   Icon para voltar á página principal
-    icon = Image.open('./images/icons/go_back icon.png').resize((50, 50))
+    icon = Image.open(Path('../Projeto_AED/images/icons/go_back_icon.png')).resize((50, 50))
     icon = ImageTk.PhotoImage(icon)
     self.go_back_btn = Button(self.tl_create_album, image = icon, bd = 0, bg = 'lightgrey', command = self.go_back)
     self.go_back_btn.image = icon
@@ -212,9 +208,12 @@ class Create_Album():
     self.image_id = self.cnv_image.create_image(0, 0, anchor = 'c', image=image)
 
 #   Label & Entry do nome da fotografia/post
-    self.photo_name_lbl = Label(self.tl_create_album, text = 'Name', font = ('Roboto', 18), bg = 'lightgrey').place(x = 70, y = 370)
-    self.photo_name = Entry(self.tl_create_album, width = 25, font = ('Roboto', 14)).place(x = 70, y = 400)
+    self.album_name_lbl = Label(self.tl_create_album, text = 'Name', font = ('Roboto', 18), bg = 'lightgrey').place(x = 70, y = 370)
+    self.album_name= StringVar()
+    self.album_name_entry = Entry(self.tl_create_album, width = 25, textvariable = self.album_name, font = ('Roboto', 14)).place(x = 70, y = 400)
+    self.btn_create_album= Button(self.tl_create_album, width=10, height=1, text='Create', font=('Roboto', 12), fg='#fff', bg='green', command=self.func_create_album).place(x= 70, y= 450)
 
+    
   def select_image(self):
     """
     Esta função permite ao utilizador escolher uma imagem guardada no seu disco, escolhê-la, \n
@@ -230,10 +229,41 @@ class Create_Album():
 #   Adicionar a imagem ao Canvas
     self.cnv_image.itemconfig(self.image_id, image=image)
 
-  
+
+  def func_create_album(self):
+    '''
+    Criar novo album de fotografias para o user
+    '''
+    self.album_name_str = self.album_name.get()
+    album_dir = "../Projeto_AED/users_photoalbums/" + self.username + '/' + self.album_name_str
+    if os.path.isdir(Path(album_dir)):
+        messagebox.showerror('Error', 'You already have an album with that name.')
+    else:
+        os.mkdir(Path(album_dir))
+        messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.')  
+    return
+
+
+
   def go_back(self):
      """
      Esta função destroi a janela atual, voltando para a página principal
      """
      self.tl_create_album.destroy()
  
+
+# def func_create_album(self):
+#             '''
+#             Criar novo album de fotografias para o user
+#             '''
+#             os.chdir('users_photoalbums')
+#             os.chdir(self.username)
+#             self.album_name_str = self.album_name.get()
+#             if os.path.isdir(self.album_name_str):
+#                 messagebox.showerror('Error', 'You already have an album with that name.')
+#                 os.chdir('..\\..')
+#             else:
+#                 os.mkdir(str(self.album_name_str))
+#                 messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.')  
+#                 os.chdir('..\\..')  
+#             return

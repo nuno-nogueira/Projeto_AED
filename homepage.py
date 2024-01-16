@@ -60,7 +60,7 @@ class Main_App:
 #             self.homepage_icon.place(x = 10, y = 5)
 
 #           Icone do perfil (FONTE - SITE FLATICON)
-            icon2 = Image.open('./images/icons/profile_icon.png').resize((50,50))
+            icon2 = Image.open(Path('../Projeto_AED/images/icons/profile_icon.png')).resize((50,50))
             icon2 = ImageTk.PhotoImage(icon2)
             self.profile_icon = Button(self.nav_bar, image = icon2, bd = 0, bg = '#333333', command = lambda:self.profile_click(admin))
             self.profile_icon.image = icon2
@@ -69,7 +69,7 @@ class Main_App:
 
 #           Icone da dashboard (FONTE - SITE FLATICON)
 #           Janela com várias estatísticas do utilizador
-            icon3 = Image.open('./images/icons/dashboard_icon.png').resize((50,50))
+            icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((50,50))
             icon3 = ImageTk.PhotoImage(icon3)
             self.bell_icon = Button(self.nav_bar, image = icon3, bg = '#333333', bd = 0)
             self.bell_icon.image = icon3
@@ -77,7 +77,7 @@ class Main_App:
 
 
 #           Icone de notificações (FONTE - SITE FLATICON)
-            icon4 = Image.open('./images/icons/bell_icon.png').resize((50,50))
+            icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((50,50))
             icon4 = ImageTk.PhotoImage(icon4)
             self.dashboard_icon = Button(self.nav_bar, image = icon4, bd = 0, bg = '#333333', command = self.notifications_click)
             self.dashboard_icon.image = icon4
@@ -172,9 +172,6 @@ class Main_App:
 #               Uma welcome message só para os users
                 self.username_label = Label(self.homepage, text = 'Welcome ' + self.username + '!', font = ('Roboto', 26), bg = 'lightgrey').place(x = 30, y = 70)
 
-#           self.activity_list = ['All Posts','Followers Only','Popular']
-#           self.activity_select = Combobox( values = self.activity_list, width = 15, font = ('Roboto', 18)).place(x = 50, y = 70)
-
 #           Label
             self.popular_posts_lbl = Label(self.homepage, text = 'Most Popular Posts',font = ('Roboto', 20), bg = 'lightgrey').place( x = 30, y = 150)
 
@@ -185,34 +182,9 @@ class Main_App:
 #           Aparece os botões de Fazer um Post e Criar um Album
             self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
             self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
-            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage))
+            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
 
 
-            #Label e Entry do nome do album
-            self.album_name_lbl = Label(self.homepage, text = 'Create an Album:', font = ('Roboto', 14), bg = 'lightgrey').place(x = 800, y = 340)
-            self.album_name= StringVar()
-            
-            self.entry_album_name = Entry(self.homepage, width = 12, font = ('Roboto', 14), textvariable=self.album_name).place(x = 800, y = 380)
-
-            #Button para criar Album
-            self.btn_create_album= Button(self.homepage, width=10, height=1, text='Create', font=('Roboto, 12'), fg='#fff', bg='green', command=self.func_create_album)
-            self.btn_create_album.place(x=800,y=420)
-
-        def func_create_album(self):
-            '''
-            Criar novo album de fotografias para o user
-            '''
-            os.chdir('users_photoalbums')
-            os.chdir(self.username)
-            self.album_name_str = self.album_name.get()
-            if os.path.isdir(self.album_name_str):
-                messagebox.showerror('Error', 'You already have an album with that name.')
-                os.chdir('..\\..')
-            else:
-                os.mkdir(str(self.album_name_str))
-                messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.')  
-                os.chdir('..\\..')  
-            return
 
         def show_add_content_frame(self):
             """
@@ -239,34 +211,14 @@ class Main_App:
             Add_Post(self.tl_add_photo, homepage, username)
             
 
-        def create_album_frame(self, homepage):
+        def create_album_frame(self, homepage, username):
+            self.username = username
+
             self.tl_create_album = Toplevel(homepage)
             self.tl_create_album.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
             self.tl_create_album.title('myPhotos')
             self.tl_create_album.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
             self.tl_create_album.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
             self.tl_create_album.configure(bg = 'lightgrey')
-            Create_Album(self.tl_create_album)
-
-        # #Icone para selecionar um tipo de grid (FONTE - SITE FLATICON)
-        # icon5 = Image.open('..\\Projeto_AED\\images\\icons\\grid_icon1.png').resize((40,40))
-        # icon5 = ImageTk.PhotoImage(icon5)
-        # grid_icon1 = Button(image = icon5, bd = 0, bg = 'lightgrey')
-        # grid_icon1.image = icon5
-        # grid_icon1.place(x = 600, y = 120)
-
-        # #Icone para selecionar um 2º tipo de grid (FONTE - SITE FLATICON)
-        # icon6 = Image.open('..\\Projeto_AED\\images\\icons\\grid_icon2.png').resize((40,40))
-        # icon6 = ImageTk.PhotoImage(icon6)
-        # grid_icon2 = Button(image = icon6, bd = 0, bg = 'lightgrey')
-        # grid_icon2.image = icon6
-        # grid_icon2.place(x = 660, y = 120)
-
-        # #Icone para selecionar um 3º tipo de grid (FONTE - SITE FLATICON)
-        # icon7 = Image.open('..\\Projeto_AED\\images\\icons\\grid_icon3.png').resize((40,40))
-        # icon7 = ImageTk.PhotoImage(icon7)
-        # grid_icon3 = Button(image = icon7, bd = 0, bg = 'lightgrey')
-        # grid_icon3.image = icon7
-        # grid_icon3.place(x = 720, y = 120)
-
+            Create_Album(self.tl_create_album, self.username)
 
