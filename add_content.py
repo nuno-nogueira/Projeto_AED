@@ -7,6 +7,7 @@ from tkinter.ttk import Combobox
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
 import os
 import datetime
+from search import *
 
 class Add_Post():
   """
@@ -180,6 +181,12 @@ class Add_Post():
         for category in categories:
            file.write(category+'\n')
         file.close()
+    #Adicionar informação de post ao ficheiro 'all-posts.txt
+    os.chdir('')
+    f_all_posts= open('', 'w', encoding='utf-8')
+    f_all_posts.write('\n'+self.username+';'+ self.chosen_category+';')
+    f_all_posts.close()
+    
 
 class Create_Album():
   def __init__(self, tl_create_album, username):

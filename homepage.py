@@ -28,18 +28,19 @@ class Main_App:
         self.homepage.place(x = 0, y = 60)
 
 #       Chama as classes Nav_Bar e Homepage, respetivamente
-        self.Nav_Bar(self.nav_bar, self.homepage, self.tl, admin)
-        self.Homepage(self.username, self.homepage, admin)
+        self.Nav_Bar(self.nav_bar, self.homepage, self.tl, admin, self.username)
+        self.Homepage(self.username, self.homepage, admin, self.tl)
 
     class Nav_Bar:
         """
         Nesta classe cria-se tudo relacionado com a Nav_Bar \n
         Widgets, layout e funções relacionadas
         """
-        def __init__(self, nav_bar, homepage, tl, admin):
+        def __init__(self, nav_bar, homepage, tl, admin, username):
             self.nav_bar = nav_bar
             self.homepage = homepage
             self.tl = tl
+            self.username=username
 
 #           Frame onde aparece os botões de 'See Profile' e 'Log Out'
 #           Aparecem quando o utilizador clica no botão com o icone do perfil
@@ -51,6 +52,14 @@ class Main_App:
 
 #           Label com o logo da app
             self.myPhotos_logo = Label(self.nav_bar, text = 'myPhotos', fg = 'white', bg = '#333333', font =('Roboto', 28)).place(x = 430, y = 5)
+
+            if admin == True:
+#               Uma welcome message para os admins
+                self.admin_label = Label(self.nav_bar, text = 'Welcome admin '+ self.username + '!', font = ('Roboto', 16), bg = '#333', fg='white').place(x = 10, y = 18)
+            else:
+#               Uma welcome message só para os users
+                self.username_label = Label(self.nav_bar, text = 'Welcome ' + self.username + '!', font = ('Roboto', 16), bg = '#333', fg='white').place(x = 10, y = 18)
+
 
 #             Icone da homepage (FONTE - SITE FLATICON)
 #             icon = Image.open('./images/icons/homepage_icon.png').resize((50,50))
@@ -156,7 +165,7 @@ class Main_App:
 
 
     class Homepage:
-        def __init__(self, username, homepage, admin):
+        def __init__(self, username, homepage, admin, tl):
             """
             Esta função cria a janela da homepage \n
             É constituida pela barra de navegação e pela página principal \n
@@ -164,25 +173,54 @@ class Main_App:
             """
             self.homepage = homepage
             self.username = username 
+            self.tl=tl
+            from search import func_search_results_window
 
-            if admin == True:
-#               Uma welcome message para os admins
-                self.admin_label = Label(self.homepage, text = 'Welcome admin '+ self.username + '!', font = ('Roboto', 26), bg = 'lightgrey').place(x = 30, y = 70)
-            else:
-#               Uma welcome message só para os users
-                self.username_label = Label(self.homepage, text = 'Welcome ' + self.username + '!', font = ('Roboto', 26), bg = 'lightgrey').place(x = 30, y = 70)
+#           --- Frame de Pesquisa ---
+            self.f_search= Frame(self.tl, width=200, height=300)
+            self.f_search.place(x=0,y=60)
+            # Label Título
+            self.lbl_search= Label(self.f_search, text='Search', font=('Roboto, 14'))
+            self.lbl_search.place(x=20,y=20)
+            # Entry:
+            self.search_entry= StringVar()
+            self.entry_search_bar= Entry(self.f_search, textvariable=self.search_entry, width=20)
+            self.entry_search_bar.place(x=20, y=60)
+            
+            #Listbox das categorias
+            self.lbox_categ = Listbox(self.f_search, height=6, bg='#eee', width=17, selectmode='multiple', font=('Roboto', 10))
+            self.lbox_categ.place(x=20,y=90)
+            f_categ = open('files\\categorias.txt', 'r', encoding='utf-8')
+            lines_categ = f_categ.readlines()
+            f_categ.close()        
+            for line in lines_categ:
+                self.lbox_categ.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
+
+            #Button para Pesquisar
+            self.btn_search= Button(self.f_search, height=2, text='Search for results', bg='lightblue', 
+                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ))
+            self.btn_search.place(x=20,y=240) 
+
+            #----------Os Meus Posts--------------------
+            # Frame para Button
+            self.f_btn_my_posts= Frame(self.tl, width=200, height=100, bg='lightblue')
+            self.f_btn_my_posts.place(x=0,y=360)
+            self.lbl_btn= Button(self.f_btn_my_posts, text='My Posts', width=12, font=('Roboto, 16'),
+                                 command=lambda:self.my_posts(self.tl))
+            self.lbl_btn.place(x=20,y=20)
+
 
 #           Label
-            self.popular_posts_lbl = Label(self.homepage, text = 'Most Popular Posts',font = ('Roboto', 20), bg = 'lightgrey').place( x = 30, y = 150)
+            # self.popular_posts_lbl = Label(self.homepage, text = 'Most Popular Posts',font = ('Roboto', 20), bg = 'lightgrey').place( x = 30, y = 150)
 
 #           Botão para adicionar um post
             self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 800, y = 150)
         
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
 #           Aparece os botões de Fazer um Post e Criar um Album
-            self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
-            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
-            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
+            self.add_content_frame = Frame(self.homepage, width = 198, height = 125, bg = '#28942a')
+            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 16, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
+            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 16, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
 
 
 
@@ -222,3 +260,12 @@ class Main_App:
             self.tl_create_album.configure(bg = 'lightgrey')
             Create_Album(self.tl_create_album, self.username)
 
+        #---------Os meus Posts---------
+        def my_posts(self, tl):
+            '''
+            Abre uma Frame para mostrar os posts do user
+            '''
+            f_my_posts= Frame(tl, width=600, height=600)
+            f_my_posts.place(x=200,y=60)
+
+            
