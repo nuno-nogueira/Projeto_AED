@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 from admins import admins
 from add_content import Add_Post, Create_Album
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
+import os
 
 class Main_App:
     def __init__(self, window, username, admin):
@@ -193,6 +194,33 @@ class Main_App:
             self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage))
             self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage))
 
+
+
+            #Label e Entry do nome do album
+            self.album_name_lbl = Label(self.homepage, text = 'Create an Album:', font = ('Roboto', 14), bg = 'lightgrey').place(x = 800, y = 340)
+            self.album_name= StringVar()
+            
+            self.entry_album_name = Entry(self.homepage, width = 12, font = ('Roboto', 14), textvariable=self.album_name).place(x = 800, y = 380)
+
+            #Button para criar Album
+            self.btn_create_album= Button(self.homepage, width=10, height=1, text='Create', font=('Roboto, 12'), fg='#fff', bg='green', command=self.func_create_album)
+            self.btn_create_album.place(x=800,y=420)
+
+        def func_create_album(self):
+            '''
+            Criar novo album de fotografias para o user
+            '''
+            os.chdir('users_photoalbums')
+            os.chdir(self.username)
+            self.album_name_str = self.album_name.get()
+            if os.path.isdir(self.album_name_str):
+                messagebox.showerror('Error', 'You already have an album with that name.')
+                os.chdir('..\\..')
+            else:
+                os.mkdir(str(self.album_name_str))
+                messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.')  
+                os.chdir('..\\..')  
+            return
 
         def show_add_content_frame(self):
             """

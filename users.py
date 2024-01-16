@@ -4,6 +4,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from homepage import Main_App #Para importar a função homepage_window (função que cria a janela homepage) que está no ficheiro homepage.py
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
+import os
 
 #----------------------------------SIGN UP-----------------------------------------------------------
 class Sign_Up():
@@ -126,6 +127,10 @@ class Sign_Up():
 #       E mostra-se uma messagebox onde informa o utilizador que a conta foi criada com sucesso!! :DD
         messagebox.showinfo('Done!','You have sucessfully created an account in myPhotos! \n Login to start using the app! :)')
         self.go_back_sign_up()
+
+#       Criar folder no momento de criar conta para armazenar os albums de fotografias desse user
+        os.chdir('users_photoalbums')
+        os.mkdir(self.username)
 
 #----------------------------------LOGIN-----------------------------------------------------------
 
