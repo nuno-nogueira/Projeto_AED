@@ -28,11 +28,13 @@ class App():
         self.login_button = Button(self.window, text = 'Login',bg = 'lightblue', fg = 'white', font = ('Roboto', 25), command = self.go_to_login).place(x = 575, y = 350)
 
 #       Botão com um icon para o utilizador sair da app
-        icon = Image.open(Path('')/ 'Projeto_AED'/ 'images'/ 'icons' / 'logout_icon.png').resize((80,80)) # platfmor independet
-        icon = ImageTk.PhotoImage(icon)
-        self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
-        self.leave_app_btn.image = icon
-        self.leave_app_btn.place( x = 920, y = 520)
+        # icon = Image.open(Path('')/ 'Projeto_AED'/ 'images'/ 'icons' / 'logout_icon.png').resize((80,80)) # platfmor independet
+        # icon = ImageTk.PhotoImage(icon)
+        # self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
+        # self.leave_app_btn.image = icon
+        # self.leave_app_btn.place( x = 920, y = 520)
+        self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
+
 
     def go_to_sign_up(self):
         """
