@@ -13,7 +13,6 @@ class App():
         Permite criar uma window que é um objeto da classe App
         """
         self.window = window
-
 #       Criar o Frame da página incial com uma imagem de fundo
         self.main_frame = Frame(self.window, width = 1000, height = 600, bg = '#333333')
         self.main_frame.place(x = 0, y = 0)
@@ -27,12 +26,14 @@ class App():
 #       Botão para passar para o frame para fazer login!
         self.login_button = Button(self.window, text = 'Login',bg = 'lightblue', fg = 'white', font = ('Roboto', 25), command = self.go_to_login).place(x = 575, y = 350)
 
+        path = "../Projeto_AED/images/icons/logout_icon.png"
+        path = os.path.abspath(path)
 #       Botão com um icon para o utilizador sair da app
-        # icon = Image.open(Path('')/ 'Projeto_AED'/ 'images'/ 'icons' / 'logout_icon.png').resize((80,80)) # platfmor independet
-        # icon = ImageTk.PhotoImage(icon)
-        # self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
-        # self.leave_app_btn.image = icon
-        # self.leave_app_btn.place( x = 920, y = 520)
+        icon = Image.open(path).resize((80,80)) # platfmor independet
+        icon = ImageTk.PhotoImage(icon)
+        self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
+        self.leave_app_btn.image = icon
+        self.leave_app_btn.place( x = 920, y = 520)
         self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
 
 
@@ -42,11 +43,13 @@ class App():
         """
         Sign_Up(self.window)
 
+
     def go_to_login(self):
         """
         Esta função leva o utilizador á página para fazer login e acessar a app
         """
         Login(self.window)
+
 
     def leave_app(self):
         """
@@ -60,7 +63,7 @@ class App():
 #--------CONFIGURAÇÕES DE JANELA------------------------------------
 window = Tk() #Chama a função Tkinter e cria uma janela
 window.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
-window.title('myPhotos')
+window.title('myPotos')
 window.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
 window.configure(bg = 'lightgrey')
 

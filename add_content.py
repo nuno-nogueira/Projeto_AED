@@ -5,30 +5,32 @@ from PIL import Image, ImageTk
 from tkinter import filedialog
 from tkinter.ttk import Combobox
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
+import os
+import datetime
 
-#,window
-#, command = lambda: self.add_posts(self.Nav_Bar, self.window)
-#def add_post_window(self, window, Nav_Bar):
-            #pass
 class Add_Post():
   """
   Esta classe é responsável por tudo relacionado com adicionar um post/fotografia \n
   Todos os widgets da janela "Add Post".
   Todas as funções relacionadas.
   """
-  def __init__(self, tl_add_photo, homepage):
+  def __init__(self, tl_add_photo, homepage, username):
     """
     Permite criar uma window que é um objeto da classe App \n
     Usado para configurar uma janela nova TopLevel
     """
     self.tl_add_photo = tl_add_photo
+    self.username = username
 
 #   Icon para voltar á página principal
-    icon = Image.open('./images/icons/go_back icon.png').resize((50, 50))
+    os.chdir('images')
+    os.chdir('icons')
+    icon = Image.open('go_back_icon.png').resize((50, 50))
     icon = ImageTk.PhotoImage(icon)
     self.go_back_btn = Button(self.tl_add_photo, image = icon, bd = 0, bg = 'lightgrey', command = self.go_back)
     self.go_back_btn.image = icon
     self.go_back_btn.place(x = 0, y = 0)
+    os.chdir('..\\..') # Voltar duas pastas atrás
 
 #   Label
     self.add_post_lbl = Label(self.tl_add_photo, text = 'Add Post', font = ('Roboto', 28), bg = 'lightgrey').place(x = 100, y = 10)
@@ -46,33 +48,53 @@ class Add_Post():
 
 #   Label & Entry do nome da fotografia/post
     self.photo_name_lbl = Label(self.tl_add_photo, text = 'Name', font = ('Roboto',18), bg = 'lightgrey').place(x = 70, y = 370)
-    self.photo_name = Entry(self.tl_add_photo, width = 25, font = ('Roboto', 14)).place(x = 70, y = 400)
+    self.photo_name = Entry(self.tl_add_photo, width = 25, font = ('Roboto', 14))
+    self.photo_name.place(x = 70, y = 400)
 
+    user_dir = os.chdir('users_photoalbums')
+    user_dir = os.chdir(self.username)
+    self.albums_list = os.listdir()
+    os.chdir('..\\..') # Voltar duas pastas atrás
 #   Label, Combobox com todos albuns do utilizador e um botão para criar um álbum que leva a outra janela
     self.add_to_album_lbl = Label(self.tl_add_photo, text = 'Add to Album:', font = ('Roboto', 18), bg = 'lightgrey').place(x = 70, y = 450)
-    self.add_to_album = Combobox(self.tl_add_photo, height = 1, width = 15, font = ('Roboto', 14)).place(x = 70, y = 480)
+    self.add_to_album = Combobox(self.tl_add_photo, height = 1, width = 15, values = self.albums_list, font = ('Roboto', 14))
+    self.add_to_album.place(x = 70, y = 480)
     self.create_album = Button(self.tl_add_photo, text = 'Create Album', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = lambda:self.go_to_albums(homepage)).place(x = 270, y = 480)
 
 #   Label & Text da descrição da fotografia/post
-    self.description_lbl = Label(self.tl_add_photo, text = 'Description', font = ('Roboto', 18), bg = "lightgrey").place(x = 600, y = 100)
-    self.description = Text(self.tl_add_photo, width = 40, height = 8, font = ('Roboto', 12), bd = 2).place(x = 600, y = 150)
+    self.description_lbl = Label(self.tl_add_photo, text = 'Description', font = ('Roboto', 18), bg = "lightgrey").place(x = 600, y = 50)
+    self.description = Text(self.tl_add_photo, width = 40, height = 7, font = ('Roboto', 10), bd = 2)
+    self.description.place(x = 600, y = 100)
   
-#   Lista provisória de categorias
-    self.category_list = ['animals','food','view','nature','city']
+#   Para ir buscar as categorias existentes ao ficheiro da categorias
+    os.chdir('files')
+    f = open('categorias.txt','r')
+    categories = f.readlines()
+    f.close()
+    os.chdir('..\\') # Voltar uma pasta atrás
+#   Lista que vai conter as categorias sem o '\n'
+#   Não dá para fazer isso para a lista "categories", porque crasha.
+    self.category_list = []
+    for category in categories:
+        category = category.strip('\n') # Remove o '\n' de cada categoria
+        self.category_list.append(category)
+        
 #   Label e Listbox com todas as categorias existentes na app
-    self.category_lbl = Label(self.tl_add_photo, text = 'Categories', font = ('Roboto', 18), bg = 'lightgrey').place(x = 600, y = 320)
+    self.category_lbl = Label(self.tl_add_photo, text = 'Categories', font = ('Roboto', 18), bg = 'lightgrey').place(x = 600, y = 250)
     self.categories = Combobox(self.tl_add_photo, values = self.category_list, width = 15, font = ('Roboto', 14))
-    self.categories.place(x = 600, y = 350)
+    self.categories.place(x = 600, y = 280)
 
 #   Botão que adiciona uma categoria á imagem escolhida
-    self.add_category_btn = Button(self.tl_add_photo, text = 'Add category', width = 15, height = 2, bd = 2, command = self.add_category).place(x = 600, y = 400)
+    self.add_category_btn = Button(self.tl_add_photo, text = 'Add category', width = 15, height = 2, bd = 2, command = self.add_category).place(x = 600, y = 320)
 
 #   Botão que remove uma categoria
-    self.remove_category_btn = Button(self.tl_add_photo, text = 'Remove category', width = 15, height = 2, bd = 2, command = self.remove_category).place(x = 600, y = 480)
+    self.remove_category_btn = Button(self.tl_add_photo, text = 'Remove category', width = 15, height = 2, bd = 2, command = self.remove_category).place(x = 600, y = 400)
 
 #   Lista que mostra as categorias escolhidas pelo utilizador
     self.categories_chosen = Listbox(self.tl_add_photo, width = 15, height = 8, font = ('Roboto', 14))
-    self.categories_chosen.place(x = 750, y = 400)
+    self.categories_chosen.place(x = 750, y = 320)
+
+    self.create_post_btn = Button(self.tl_add_photo, text = 'Create Post', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = self.create_post).place(x = 800, y = 540)
 
   def select_image(self):
     """
@@ -80,14 +102,16 @@ class Add_Post():
     para depois postar na app.
     """
     #Vai buscar o nome do ficheiro que o utilizador inseriu
-    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = './images/icons',
-              filetypes = (('PNG files','*.png'),('GIF files','*.gif'),('All Files','*.*')))
+    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = './images/backgrounds',
+              filetypes = (('PNG files','*.png'),('GIF files','*.gif'), ('JPEG files','*.jpeg'),('All Files','*.*')))
 
-#   Para depois defini-la e adicioná-la ao Canvas
-    image = PhotoImage(file = filename)
+    if filename: # Para verificar que o user selecionou mesmo o ficheiro
 
-#   Adicionar a imagem ao Canvas
-    self.cnv_image.itemconfig(self.image_id, image=image)
+#       Para depois defini-la e adicioná-la ao Canvas
+        image = PhotoImage(file = filename)
+
+#       Adicionar a imagem ao Canvas
+        self.cnv_image.itemconfig(self.image_id, image=image)
 
 
   def add_category(self):
@@ -141,6 +165,26 @@ class Add_Post():
     self.tl_create_album.configure(bg = 'lightgrey')
     Create_Album(self.tl_create_album)
      
+
+  def create_post(self):
+    data = datetime.datetime.now()
+    name = self.photo_name.get()
+    date = data.strftime("%d/%m/%Y") + ';' + data.strftime("%H:%M:%S")
+    description = self.description.get('0.0', END)
+    categories = self.categories_chosen.get('0', END)
+    album = self.add_to_album.get()
+    os.chdir('users_photoalbums')
+    os.chdir(self.username)
+    os.chdir(album)
+    os.mkdir(name)
+    os.chdir(name)
+    name = name + '.txt'
+    with open(name, 'x') as file:
+        name = name.replace('.txt','')
+        file.write('{0}\n{1}\n{2}'.format(name, date, description))
+        for category in categories:
+           file.write(category+'\n')
+        file.close()
 
 class Create_Album():
   def __init__(self, tl_create_album):

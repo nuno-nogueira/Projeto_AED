@@ -84,9 +84,6 @@ class Main_App:
             self.dashboard_icon.place(x = 800, y = 5)
 
 #           Botão em que faz com que o utilizador saia da conta com que está conectado e volte à página principal
-            self.check_profile = Button(self.profile_click_frame, text = 'See Profile', font = ('Roboto', 16), bg = 'lightgrey', bd = '3', relief = 'raised', width = 10)
-
-#           Botão em que faz com que o utilizador saia da conta com que está conectado e volte à página principal
             self.log_out = Button(self.profile_click_frame, text = 'Log Out', font = ('Roboto', 16), bg = 'lightgrey', bd = '3', relief = 'raised', width = 10, command = self.logging_out)
 
 #           Botão de administrador para gerir a app(abre um top level para a gerência da app)
@@ -127,15 +124,13 @@ class Main_App:
             """
             if self.profile_click_frame.winfo_ismapped(): # Se o frame estiver na janela
                 self.profile_click_frame.place_forget()
-                self.check_profile.place_forget()
                 self.log_out.place_forget()
                 self.btn_tl_admin.place_forget()
             else: # Senão
                 self.profile_click_frame.place(x = 870, y = 0)
-                self.check_profile.place(x = 0, y = 0)
-                self.log_out.place(x = 0, y = 45)
+                self.log_out.place(x = 0, y = 0)
                 if admin == True:
-                    self.btn_tl_admin.place(x = 0, y = 90)
+                    self.btn_tl_admin.place(x = 0, y = 45)
         
 
         def notifications_click(self):
@@ -157,9 +152,7 @@ class Main_App:
             """
             Esta função pergunta ao utilizador se deseja sair da conta 
             """
-            answer = messagebox.askquestion('Exit','Are you sure you want to log out?')
-            if answer == 'yes':
-                self.tl.destroy() #A janela Top Level é destruída
+            self.tl.destroy() #A janela Top Level é destruída
 
 
     class Homepage:
@@ -191,9 +184,8 @@ class Main_App:
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
 #           Aparece os botões de Fazer um Post e Criar um Album
             self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
-            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage))
+            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
             self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage))
-
 
 
             #Label e Entry do nome do album
@@ -236,14 +228,16 @@ class Main_App:
                 self.add_post.place(x = 0, y = 0)
                 self.add_album.place(x = 0, y = 60)
 
-        def add_post_frame(self, homepage):
+        def add_post_frame(self, homepage, username):
+            self.username = username
             self.tl_add_photo = Toplevel(homepage)
             self.tl_add_photo.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
             self.tl_add_photo.title('myPhotos')
             self.tl_add_photo.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
             self.tl_add_photo.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
             self.tl_add_photo.configure(bg = 'lightgrey')
-            Add_Post(self.tl_add_photo, homepage)
+            Add_Post(self.tl_add_photo, homepage, username)
+            
 
         def create_album_frame(self, homepage):
             self.tl_create_album = Toplevel(homepage)
