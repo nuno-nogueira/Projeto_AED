@@ -241,13 +241,15 @@ class Create_Album():
     '''
     Criar novo album de fotografias para o user
     '''
+    self.created_album=0
     self.album_name_str = self.album_name.get()
     album_dir = "../Projeto_AED/users_photoalbums/" + self.username + '/' + self.album_name_str
     if os.path.isdir(Path(album_dir)):
         messagebox.showerror('Error', 'You already have an album with that name.')
     else:
         os.mkdir(Path(album_dir))
-        messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.')  
+        messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.') 
+        self.created_album=1
     return
 
 

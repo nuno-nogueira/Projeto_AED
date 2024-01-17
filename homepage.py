@@ -17,14 +17,13 @@ class Main_App:
         self.tl.geometry('1000x600+100-100') #  Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
         self.tl.title('myPhotos')
         self.tl.resizable(0,0) #    Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
-        self.tl.configure(bg = 'lightgrey')
         
 #       Configuração da NavBar
-        self.nav_bar = Frame(self.tl, width = 1000, height = 60, bg = '#333333')
+        self.nav_bar = Frame(self.tl, width = 1000, height = 60, bg = '#333')
         self.nav_bar.place(x = 0, y = 0)
 
 #       Configuração da Homepage
-        self.homepage = Frame(self.tl, width = 1000, height = 1000, bg = 'lightgrey')
+        self.homepage = Frame(self.tl, width = 1000, height = 1000, bg = '#fff')
         self.homepage.place(x = 0, y = 60)
 
 #       Chama as classes Nav_Bar e Homepage, respetivamente
@@ -186,7 +185,6 @@ class Main_App:
             self.search_entry= StringVar()
             self.entry_search_bar= Entry(self.f_search, textvariable=self.search_entry, width=20)
             self.entry_search_bar.place(x=20, y=60)
-            
             #Listbox das categorias
             self.lbox_categ = Listbox(self.f_search, height=6, bg='#eee', width=17, selectmode='multiple', font=('Roboto', 10))
             self.lbox_categ.place(x=20,y=90)
@@ -195,23 +193,17 @@ class Main_App:
             f_categ.close()        
             for line in lines_categ:
                 self.lbox_categ.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
-
             #Button para Pesquisar
             self.btn_search= Button(self.f_search, height=2, text='Search for results', bg='lightblue', 
                                     command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ))
             self.btn_search.place(x=20,y=240) 
 
-            #----------Os Meus Posts--------------------
-            # Frame para Button
+#           Frame para Button 'My Albums'
             self.f_btn_my_posts= Frame(self.tl, width=200, height=100, bg='lightblue')
             self.f_btn_my_posts.place(x=0,y=360)
-            self.lbl_btn= Button(self.f_btn_my_posts, text='My Posts', width=12, font=('Roboto, 16'),
-                                 command=lambda:self.my_posts(self.tl))
+            self.lbl_btn= Button(self.f_btn_my_posts, text='My Albums', width=12, font=('Roboto, 16'),
+                                 command=lambda:self.my_albums(self.tl, self.username))
             self.lbl_btn.place(x=20,y=20)
-
-
-#           Label
-            # self.popular_posts_lbl = Label(self.homepage, text = 'Most Popular Posts',font = ('Roboto', 20), bg = 'lightgrey').place( x = 30, y = 150)
 
 #           Botão para adicionar um post
             self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 800, y = 150)
@@ -223,7 +215,7 @@ class Main_App:
             self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 16, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
 
 
-
+#       ----------- + POST Button ---------------------------------------------------
         def show_add_content_frame(self):
             """
             Esta função faz com que o Frame para adicionar um post apareça \n
@@ -248,7 +240,6 @@ class Main_App:
             self.tl_add_photo.configure(bg = 'lightgrey')
             Add_Post(self.tl_add_photo, homepage, username)
             
-
         def create_album_frame(self, homepage, username):
             self.username = username
 
@@ -260,12 +251,47 @@ class Main_App:
             self.tl_create_album.configure(bg = 'lightgrey')
             Create_Album(self.tl_create_album, self.username)
 
-        #---------Os meus Posts---------
-        def my_posts(self, tl):
-            '''
-            Abre uma Frame para mostrar os posts do user
-            '''
-            f_my_posts= Frame(tl, width=600, height=600)
-            f_my_posts.place(x=200,y=60)
+#       ----------- My Albums Button -------------------------------------------------
 
+        def my_albums(self, tl, username):
+            '''
+            Abre uma Frame para mostrar os albums do user
+            '''
+            #Frame 
+            f_my_albums= Frame(tl, width=600, height=600)
+            f_my_albums.place(x=200,y=60)
+            btn_destroy_frame= Button(f_my_albums, text=' X ', command=f_my_albums.destroy)
+            btn_destroy_frame.place(x=550,y=30)
+            
+#           --- Fazer os Álbums aparecer:
+            
+            #Meter numa variável a diretoria/pasta dos álbums do user
+            self.albums_directory=('./users_photoalbums/'+ username) 
+            
+            # Listar os álbums
+            album_folders = []
+            for i in os.listdir(self.albums_directory): #Por cada folder
+                full_path = os.path.join(self.albums_directory, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
+                if os.path.isdir(full_path): #se for uma folder
+                    album_folders.append(i) #Adiciona o nome desse album á lista
+            
+            # Criar um Button para cada Álbum
+            for album_folder in album_folders:
+                btn_my_album = Button(f_my_albums, text=album_folder, width=40, height=5, 
+                                      command=lambda folder=album_folder: self.open_my_album_frame(folder))
+                btn_my_album.pack(padx=30, pady=30)
+
+        # def open_my_album_frame(self, album_folder):
+        #     '''
+        #     Cada Álbum abre uma nova Frame
+        #     '''
+
+
+
+            
+
+            
+            
+
+        
             

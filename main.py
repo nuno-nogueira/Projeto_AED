@@ -13,27 +13,40 @@ class App():
         Permite criar uma window que é um objeto da classe App
         """
         self.window = window
-#       Criar o Frame da página incial com uma imagem de fundo
-        self.main_frame = Frame(self.window, width = 1000, height = 600, bg = '#333333')
+#       Criar o Frame da página incial com uma Imagem de fundo
+        self.main_frame = Frame(self.window, width = 1000, height = 600, bg = '#fff')
         self.main_frame.place(x = 0, y = 0)
 
-#       Mensagem de bem-vindo
-        self.welcome_message_label = Label(self.window, text = 'Welcome to \nmyPhotos!', bg = '#333333', font = ('Roboto', 55), fg = 'white').place(x = 300, y = 150)
+#       ----- Imagem -----
+        # Canvas
+        canvas = Canvas(self.window, width=1000, height=300)
+        canvas.place(x=0,y=300)
+        # Buscar Imagem
+        bg_image = Image.open(Path("./images/backgrounds/bg.jpg"))
+        # Redimensionar Imagem
+        resized_bg_image = bg_image.resize((1000, 600))  #Ajustar tamanho da Imagem (width, height)
+        # PhotoImage
+        self.bg_img = ImageTk.PhotoImage(resized_bg_image)
+        # Adicionar a Imagem ao Canvas
+        canvas.create_image(500, 200, anchor=CENTER, image=self.bg_img)
 
-#       Botão para passar para o frame para criar uma conta!
-        self.sign_up_button = Button(self.window, text = 'Sign Up',bg = 'lightblue', fg = 'white', font = ('Roboto', 25), command = self.go_to_sign_up).place(x = 325, y = 350)
+#       Título da Página Principal
+        self.title_main_page = Label(self.window, text = 'Welcome to myPhotos.', width=18, height=2, bg = '#fff', font = ('Roboto', 40), fg = '#333').place(x = 50, y = 150)
 
-#       Botão para passar para o frame para fazer login!
-        self.login_button = Button(self.window, text = 'Login',bg = 'lightblue', fg = 'white', font = ('Roboto', 25), command = self.go_to_login).place(x = 575, y = 350)
+#       Botão para passar para o frame para fazer login
+        self.login_button = Button(self.window, text = 'Login',bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_login).place(x = 65, y = 435)
+
+#       Botão para passar para o frame para criar uma conta
+        self.sign_up_button = Button(self.window, text = 'Sign Up',bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_sign_up).place(x = 325, y = 435)
 
        
 #       Botão com um icon para o utilizador sair da app
-        icon = Image.open(Path('../Projeto_AED/images/icons/logout_icon.png')).resize((80,80)) # platfmor independet
-        icon = ImageTk.PhotoImage(icon)
-        self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333333', command = self.leave_app)
-        self.leave_app_btn.image = icon
-        self.leave_app_btn.place( x = 920, y = 520)
-        self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
+        # icon = Image.open(Path('../Projeto_AED/images/icons/logout_icon.png')).resize((80,80)) # Platform independent
+        # icon = ImageTk.PhotoImage(icon)
+        # self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333', command = self.leave_app)
+        # self.leave_app_btn.image = icon
+        # self.leave_app_btn.place( x = 800, y = 200)
+        # self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
 
 
     def go_to_sign_up(self):
@@ -59,12 +72,13 @@ class App():
            exit()
 
         
-#--------CONFIGURAÇÕES DE JANELA------------------------------------
+# -------- CONFIGURAÇÕES DE JANELA ------------------------------------ #
+           
 window = Tk() #Chama a função Tkinter e cria uma janela
 window.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
 window.title('myPotos')
 window.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
-window.configure(bg = 'lightgrey')
+window.configure(bg = '#fff')
 
 App(window)
 

@@ -20,41 +20,41 @@ class Sign_Up():
         self.tl.resizable(0,0) #    Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
 
 #       Variável que cria a frame para a página do Sign Up
-        self.sign_up_frame = Frame(self.tl, width = 1000, height = 600, bg = '#333333')
+        self.sign_up_frame = Frame(self.tl, width = 1000, height = 600, bg = '#333')
         self.sign_up_frame.place(x = 0, y = 0)
 
 #       Label com 'Sign Up'
-        self.sign_up_message = Label(self.tl, text = 'Sign Up', font = ('Roboto', 55), bg = '#333333').place(x = 380, y = 80)
+        self.sign_up_message = Label(self.tl, text = 'Sign Up', font = ('Roboto', 55), bg = '#333', fg='lightblue').place(x = 380, y = 90)
 
 #       Variáveis para o utilizador inserir o email//cria input e entry
         self.email = StringVar()
         self.email.set('')
-        self.email_label = Label(self.tl, text = 'Email:', font = ('Roboto', 12), bg = '#333333').place(x = 340, y = 250)
-        self.email_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.email).place(x = 400, y = 250)
+        self.email_label = Label(self.tl, text = 'Email:', font = ('Roboto', 12), bg = '#333', fg='#fff').place(x = 340, y = 220)
+        self.email_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.email).place(x = 400, y = 220)
 
 #       Variáveis para o utilizador inserir o username// cria input e entry
         self.username = StringVar() #   Variável do username que o utilizador inserir (mais tarde para criar conta)
         self.username.set('')
-        self.username_label = Label(self.tl, text = 'Username: ', font = ('Roboto', 12), bg = '#333333').place(x = 307, y = 300)
-        self.username_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.username).place(x = 400, y = 300)
+        self.username_label = Label(self.tl, text = 'Username: ', font = ('Roboto', 12), bg = '#333', fg='#fff').place(x = 307, y = 270)
+        self.username_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.username).place(x = 400, y = 270)
 
 #       Variáveis para o utilizador inserir a password// cria input e entry
         self.password = StringVar()
         self.password.set('')
-        self.password_label = Label(self.tl, text = 'Password:', font = ('Roboto', 12), bg = '#333333').place(x = 307, y = 350)
-        self.password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.password, show ='*').place( x = 400, y = 350)
+        self.password_label = Label(self.tl, text = 'Password:', font = ('Roboto', 12), bg = '#333', fg='#fff').place(x = 307, y = 320)
+        self.password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.password, show ='*').place( x = 400, y = 320)
 
 #       Variáveis para o utilizador confirmar a password// cria input e entry
         self.confirm_password = StringVar()
         self.confirm_password.set('')
-        self.confirm_password_label = Label(self.tl, text = 'Confirmar Password:', font = ('Roboto', 12), bg = '#333333').place(x = 230, y = 400)
-        self.confirm_password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.confirm_password, show ='*').place( x = 400, y = 400)
+        self.confirm_password_label = Label(self.tl, text = 'Confirmar Password:', font = ('Roboto', 12), bg = '#333', fg='#fff').place(x = 230, y = 370)
+        self.confirm_password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.confirm_password, show ='*').place( x = 400, y = 370)
 
 #       Botão para criar conta
-        self.create_account_button = Button(self.tl, text = 'Create Account', font = ('Roboto', 20), bg = 'lightblue', fg = 'white', command = self.create_account).place(x = 630, y = 450)
+        self.create_account_button = Button(self.tl, text = 'Create Account', width=18, font = ('Roboto', 16), bg = '#333', fg = 'lightblue', command = self.create_account).place(x = 400, y = 430)
 
 #       Botão para voltar à página principal
-        self.go_back_button = Button(self.tl, text = 'Go Back', font = ('Roboto', 20), bg = 'lightblue', fg = 'white', command = self.go_back_sign_up).place(x = 280, y = 450)
+        self.go_back_button = Button(self.tl, text = 'Go Back', font = ('Roboto', 16), bg = 'white', fg = '#333', command = self.go_back_sign_up).place(x = 70, y = 510)
 
     def go_back_sign_up(self):
         """
@@ -145,29 +145,29 @@ class Login():
         self.window = window
 
 #       Cria frame para o login
-        self.login_frame = Frame(self.tl, width = 1000, height = 600, bg = '#333333')
+        self.login_frame = Frame(self.tl, width = 1000, height = 600, bg = '#333')
         self.login_frame.place(x = 0, y = 0)
 
 #       Titulo da página
-        self.login_message = Label(self.tl, text = 'Login', font = ('Roboto', 55), bg = '#333333').place(x = 400, y = 150)
+        self.login_message = Label(self.tl, text = 'Login', font = ('Roboto', 55), bg = '#333333', fg='lightblue').place(x = 400, y = 150)
 
 #       Variável que guarda a informação inserida no entry do username \\ Entry e Label
         self.username = StringVar() 
         self.username.set('')
-        self.username_label = Label(self.tl, text = 'Username:', font = ('Roboto', 12), bg = '#333333').place(x = 305, y = 300)
-        self.username_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.username).place(x = 400, y = 300)
+        self.username_label = Label(self.tl, text = 'Username:', font = ('Roboto', 12), bg = '#333333', fg='#fff').place(x = 290, y = 300)
+        self.username_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.username).place(x = 380, y = 300)
     
 #       Variável que guarda a informação inserida na entry da password \\ Entry e Label
         self.password = StringVar()
         self.password.set('')
-        self.password_label = Label(self.tl, text = 'Password:', font = ('Roboto', 12), bg = '#333333').place(x = 307, y = 350)
-        self.password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.password, show ='*').place( x = 400, y = 350)
+        self.password_label = Label(self.tl, text = 'Password:', font = ('Roboto', 12), bg = '#333333', fg='#fff').place(x = 290, y = 350)
+        self.password_entry = Entry(self.tl, width = 25, font = ('Roboto', 12), textvariable = self.password, show ='*').place( x = 380, y = 350)
 
 #       Botão para criar conta
-        self.login_button = Button(self.tl, text = 'Login', font = ('Roboto', 20), bg = 'lightblue', fg = 'white', command = self.login).place(x = 580, y = 380)    
+        self.login_button = Button(self.tl, text = 'Login', width=7, font = ('Roboto', 16), bg = '#333', fg = 'lightblue', command = self.login).place(x = 445, y = 400)    
 
 #       Botão para voltar à página principal
-        self.go_back_button = Button(self.tl, text = 'Go Back', font = ('Roboto', 20), bg = 'lightblue', fg = 'white', command = self.go_back_login).place(x = 310, y = 380)
+        self.go_back_button = Button(self.tl, text = 'Go Back', font = ('Roboto', 16), bg = 'white', fg = '#333', command = self.go_back_login).place(x = 70, y = 510)
  
 
     def go_back_login(self):

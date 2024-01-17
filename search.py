@@ -8,6 +8,9 @@ def func_search_results_window(tl, search_entry, lbox_categ):
     '''
     f_results= Frame(tl, width=600, height=600)
     f_results.place(x=200,y=60)
+    btn_destroy_frame= Button(f_results, text=' X ', command=f_results.destroy)
+    btn_destroy_frame.place(x=550,y=30)
+
 
     #Treeview
     tree = ttk.Treeview(f_results, columns = ("Utilizador", "Categoria", "Data"), show = "headings", height = 12, selectmode = "browse")
@@ -38,10 +41,10 @@ def func_search_results_window(tl, search_entry, lbox_categ):
             if selected_item == line.split(";")[1]:
                 tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2]))
     
-    def on_treeview_click(event):
+    def treeview_click(event):
         item = tree.focus()  # Obter a linha selecionada
         values = tree.item(item, 'values')  # Obter os valores dessa linha
         print("Clicked on item:", values)
         
     # Ligar a função ao click event
-    tree.bind('<ButtonRelease-1>', on_treeview_click)
+    tree.bind('<ButtonRelease-1>', treeview_click)
