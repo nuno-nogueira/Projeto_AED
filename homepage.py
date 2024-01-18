@@ -258,9 +258,9 @@ class Main_App:
             Abre uma Frame para mostrar os albums do user
             '''
             #Frame 
-            f_my_albums= Frame(tl, width=600, height=600)
-            f_my_albums.place(x=200,y=60)
-            btn_destroy_frame= Button(f_my_albums, text=' X ', command=f_my_albums.destroy)
+            self.f_my_albums= Frame(tl, width=600, height=600, bg='lightblue')
+            self.f_my_albums.place(x=200,y=60)
+            btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
             btn_destroy_frame.place(x=550,y=30)
             
 #           --- Fazer os Álbums aparecer:
@@ -277,14 +277,87 @@ class Main_App:
             
             # Criar um Button para cada Álbum
             for album_folder in album_folders:
-                btn_my_album = Button(f_my_albums, text=album_folder, width=40, height=5, 
-                                      command=lambda folder=album_folder: self.open_my_album_frame(folder))
+                btn_my_album = Button(self.f_my_albums, text=album_folder, width=40, height=5, 
+                                      command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
                 btn_my_album.pack(padx=30, pady=30)
 
-        # def open_my_album_frame(self, album_folder):
-        #     '''
-        #     Cada Álbum abre uma nova Frame
-        #     '''
+        def open_my_album_frame(self, tl, album_folder, username):
+            '''
+            Cada Álbum abre uma nova Frame com Publicações
+            '''
+            # Frame
+            self.f_my_album= Frame(tl, width=600, height=600, bg='pink')
+            self.f_my_album.place(x=200,y=60)
+            # Button Sair Frame
+            btn_destroy_frame2= Button(self.f_my_album, text=' X ', command=self.f_my_album.destroy)
+            btn_destroy_frame2.place(x=550,y=30)
+
+#           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
+            
+            # Criar um path até ao Álbum clicado
+            album_path = os.path.join('.\\users_photoalbums\\', username, album_folder) #não é necessário concatenação, nem \\
+            
+            # Listar os Posts do meu Álbum
+            my_album_post = []
+            for i in os.listdir(album_path): #por cada folder(post) dentro da folder(Álbum)
+                full_path = os.path.join(album_path , i) #está a juntar a folder(álbum) com a folder(post) em vez de usar concatenação e '\\'
+                if os.path.isdir(full_path): #se full_path for uma folder
+                    my_album_post.append(i) #Adiciona o nome desse Post à lista
+                    
+            # Cada Post vai ser um Button
+            for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
+                post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
+                
+                # Obter a imagem que está dentro da folder, que por sua vez está dentro do Álbum 
+                image_files = []
+                extensions = ('.png', '.jpg', '.jpeg', '.gif')
+                for extension in extensions:
+                    matching_files = []
+                    for i in os.listdir(post_path): #por cada Post path
+                        if i.lower().endswith(extension):
+                            matching_files.append(i) #reunimos as imagens numa lista
+                                        
+                    image_files.extend(matching_files) #adicionar os matching_files à lista image_files
+
+                if image_files: #se a lista tiver pelo menos um elemento, a condição fica True e a próximas linhas são executadas
+                    image_path = os.path.join(post_path, image_files[0]) #juntar o path do post com a imagem
+                    
+                    image = Image.open(image_path)
+                    image = image.resize((150, 150)) # width, height
+                    photo = ImageTk.PhotoImage(image) #para lembrar o Python que não pedi para apagar nada
+
+                    btn_my_post = Button(self.f_my_album, image=photo, width=150, height=150,
+                                        command=lambda: self.open_my_post(self.f_my_album))
+                    btn_my_post.image = photo  #''garbage collection'' para a imagem não ser apagada automaticamente para criar memória livre
+                else:
+                    btn_my_post = Button(self.f_my_album, text=i, width=40, height=5,
+                                        command=lambda: self.open_my_post(self.f_my_album))
+
+                btn_my_post.grid(column=0, row=row, padx=30, pady=30)
+        
+
+#       ----- Abrir um Post ao clicar no meu álbum de fotos ---------- 
+
+        def open_my_post(self, f_my_album):
+            '''
+            Cada Post abre um TopLevel()
+            '''
+            tl_my_post= Toplevel(f_my_album)
+            tl_my_post.geometry('800x500+100-100') 
+            tl_my_post.title('MyPhotos')
+            tl_my_post.resizable(0,0) 
+
+            # Canvas com a Imagem do Post
+            canvas = Canvas(tl_my_post, width=300, height=400)
+            canvas.place(x=30,y=30)
+            # Buscar Imagem
+            bg_image = Image.open(Path(""))
+            # Redimensionar Imagem
+            resized_bg_image = bg_image.resize((1000, 600))  #Ajustar tamanho da Imagem (width, height)
+            # PhotoImage
+            self.bg_img = ImageTk.PhotoImage(resized_bg_image)
+            # Adicionar a Imagem ao Canvas
+            canvas.create_image(500, 200, anchor=CENTER, image=self.bg_img)
 
 
 
