@@ -8,6 +8,7 @@ from tkinter.ttk import Combobox
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
 import os
 import datetime
+import shutil # Módulo para passar as imagens de uma diretoria qualquer para a pasta dos posts
 
 class Add_Post():
   """
@@ -40,12 +41,9 @@ class Add_Post():
     cnv_image = Canvas(self.tl_add_photo, width = 400, height = 200)
     cnv_image.place(x = 70, y = 100)
 
-#   Para definir uma imagem inicial
-    image_chosen = Image.open(Path("./images/backgrounds/bg.jpg"))
-    image_chosen = image_chosen.resize((1000,400))
-
-    self.image = ImageTk.PhotoImage(image_chosen)
-    image_id = cnv_image.create_image(0, 0, anchor = CENTER, image = self.image)
+    self.filename = ''
+    self.image = ''
+    image_id = cnv_image.create_image(200, 100, anchor = CENTER, image = self.image)
 
 #   Label & Entry do nome da fotografia/post
     self.photo_name_lbl = Label(self.tl_add_photo, text = 'Name', font = ('Roboto',18), bg = 'lightgrey').place(x = 70, y = 370)
@@ -69,8 +67,6 @@ class Add_Post():
     f = open(Path('../Projeto_AED/files/categorias.txt'),'r')
     categories = f.readlines()
     f.close()
-#   Lista que vai conter as categorias sem o '\n'
-#   Não dá para fazer isso para a lista "categories", porque crasha.
     self.category_list = []
     for category in categories:
         category = category.strip('\n') # Remove o '\n' de cada categoria
@@ -100,17 +96,16 @@ class Add_Post():
     """
     # Vai buscar o nome do ficheiro que o utilizador inseriu
     self.tl_add_photo.attributes('-topmost', 'false') # Para a janela deixar de ser toplevel (para acessar o explorador de ficheiros)
-    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = "./images/backgrounds",
+    self.filename = filedialog.askopenfilename(title = 'Select Image',
                                           filetypes = (("PNG files","*.png"),("GIF files","*.gif"),("JPG files","*.jpg"),("All Files","*.*")))
 
-    self.image = Image.open(filename) # Abrir o ficheiro
-    resized_image = self.image.resize((1000, 400)) # Mudar tamanho
+    self.image = Image.open(self.filename) # Abrir o ficheiro
+    resized_image = self.image.resize((400, 200)) # Mudar tamanho
     self.image = ImageTk.PhotoImage(resized_image) # Abrir imagem com a biblioteca PIL (ImageTk)
 
     cnv_image.itemconfig(image_id, image=self.image) # Mudar imagem presente no Canvas
     
     self.tl_add_photo.attributes('-topmost', 'true') # Para a janela voltar a ser toplevel
-
 
   def add_category(self):
     """
@@ -173,11 +168,14 @@ class Add_Post():
     description = self.description.get('0.0', END)
     categories = self.categories_chosen.get('0', END)
     album = self.add_to_album.get()
+    filename = self.filename
     os.chdir('users_photoalbums')
     os.chdir(self.username)
     os.chdir(album)
     os.mkdir(name)
     os.chdir(name)
+    user_directory = './users_photoalbums/' + self.username
+    shutil.copy2(filename, os.getcwd())
     name = name + '.txt'
     with open(name, 'x') as file:
         name = name.replace('.txt','')
@@ -186,11 +184,14 @@ class Add_Post():
            file.write(category+'\n')
         file.close()
     #Adicionar informação de post ao ficheiro 'all-posts.txt
-    os.chdir('')
-    f_all_posts= open('', 'w', encoding='utf-8')
-    f_all_posts.write('\n'+self.username+';'+ self.chosen_category+';')
+    for i in range(4):
+        os.chdir('..')  # Voltar quatro pastas atras
+    os.chdir('files')
+    f_all_posts= open('all-posts.txt', 'w', encoding='utf-8')
+    f_all_posts.write('\n'+self.username+';')
+    for category in categories:
+       f_all_posts.write(category+';')
     f_all_posts.close()
-    
 
 class Create_Album():
   def __init__(self, tl_create_album, username):
