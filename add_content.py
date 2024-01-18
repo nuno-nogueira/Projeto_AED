@@ -34,15 +34,18 @@ class Add_Post():
     self.add_post_lbl = Label(self.tl_add_photo, text = 'Add Post', font = ('Roboto', 28), bg = 'lightgrey').place(x = 100, y = 10)
 
 #   Botão que chama a função "select_image" que é responsável por adicionar a imagem selecionada ao ecrã
-    self.add_photo_btn = Button(self.tl_add_photo, text = 'Add Image', width = 10, height = 2, bd = 2, command = self.select_image).place(x = 70, y = 310)
+    self.add_photo_btn = Button(self.tl_add_photo, text = 'Add Image', width = 10, height = 2, bd = 2, command = lambda: self.select_image(image_id, cnv_image)).place(x = 70, y = 310)
 
 #   Criar um Canvas para de seguida adicionar a fotografia selecionada pelo utilizador
-    self.cnv_image = Canvas(self.tl_add_photo, width = 400, height = 200)
-    self.cnv_image.place(x = 70, y = 100)
+    cnv_image = Canvas(self.tl_add_photo, width = 400, height = 200)
+    cnv_image.place(x = 70, y = 100)
 
 #   Para definir uma imagem inicial
-    image = PhotoImage(file = '')
-    self.image_id = self.cnv_image.create_image(0, 0, anchor = 'c', image=image)
+    image_chosen = Image.open(Path("./images/backgrounds/bg.jpg"))
+    image_chosen = image_chosen.resize((1000,400))
+
+    self.image = ImageTk.PhotoImage(image_chosen)
+    image_id = cnv_image.create_image(0, 0, anchor = CENTER, image = self.image)
 
 #   Label & Entry do nome da fotografia/post
     self.photo_name_lbl = Label(self.tl_add_photo, text = 'Name', font = ('Roboto',18), bg = 'lightgrey').place(x = 70, y = 370)
@@ -90,22 +93,23 @@ class Add_Post():
 
     self.create_post_btn = Button(self.tl_add_photo, text = 'Create Post', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = self.create_post).place(x = 800, y = 540)
 
-  def select_image(self):
+  def select_image(self, image_id, cnv_image):
     """
     Esta função permite ao utilizador escolher uma imagem guardada no seu disco, escolhê-la, \n
     para depois postar na app.
     """
-    #Vai buscar o nome do ficheiro que o utilizador inseriu
-    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = './images/backgrounds',
-              filetypes = (('PNG files','*.png'),('GIF files','*.gif'), ('JPEG files','*.jpeg'),('All Files','*.*')))
+    # Vai buscar o nome do ficheiro que o utilizador inseriu
+    self.tl_add_photo.attributes('-topmost', 'false') # Para a janela deixar de ser toplevel (para acessar o explorador de ficheiros)
+    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = "./images/backgrounds",
+                                          filetypes = (("PNG files","*.png"),("GIF files","*.gif"),("JPG files","*.jpg"),("All Files","*.*")))
 
-    if filename: # Para verificar que o user selecionou mesmo o ficheiro
+    self.image = Image.open(filename) # Abrir o ficheiro
+    resized_image = self.image.resize((1000, 400)) # Mudar tamanho
+    self.image = ImageTk.PhotoImage(resized_image) # Abrir imagem com a biblioteca PIL (ImageTk)
 
-#       Para depois defini-la e adicioná-la ao Canvas
-        image = PhotoImage(file = filename)
-
-#       Adicionar a imagem ao Canvas
-        self.cnv_image.itemconfig(self.image_id, image=image)
+    cnv_image.itemconfig(image_id, image=self.image) # Mudar imagem presente no Canvas
+    
+    self.tl_add_photo.attributes('-topmost', 'true') # Para a janela voltar a ser toplevel
 
 
   def add_category(self):
