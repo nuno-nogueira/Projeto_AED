@@ -60,9 +60,30 @@ class Add_Post():
 
 #   Label & Text da descrição da fotografia/post
     self.description_lbl = Label(self.tl_add_photo, text = 'Description', font = ('Roboto', 18), bg = "lightgrey").place(x = 600, y = 50)
-    self.description = Text(self.tl_add_photo, width = 40, height = 7, font = ('Roboto', 10), bd = 2)
+    self.description = Text(self.tl_add_photo, width = 40, height = 6, font = ('Roboto', 10), bd = 2)
     self.description.place(x = 600, y = 100)
-  
+    self.chars_warning = Label(self.tl_add_photo, text = '', font = ('Roboto', 12), bg = 'lightgrey')
+    self.chars_warning.place(x = 600, y = 200)
+
+    def count_chars_in_description(chars):
+       """
+       Função que conta o nº de caracteres inseridos no widgets Text \n
+       O limite é de 150 caracteres \n 
+       Se chegar a 130, aparece o aviso, e se chegar a 150, não deixa escrever mais!
+       """
+       description_str = self.description.get('1.0', 'end-1c') # Exceto o último line break
+       line_breaks = description_str.count('\n') # Para as line breaks não contarem como caracteres
+       chars_number = len(description_str) - line_breaks
+       if (chars_number > 150):
+          self.description.delete('end-2c')
+          self.description.configure(bg = '#e35959')
+          self.chars_warning.config(text = 'You have exceeded the 150 characters limit!', bg = '#e35959')
+       if (chars_number >= 130 and chars_number < 150):
+          self.description.configure(bg = '#d3e359')
+          self.chars_warning.config(text = 'You are reaching the 150 characters limit!', bg = '#d3e359')
+          
+    self.description.bind('<KeyRelease>', count_chars_in_description) # Para chamar a função cada vez que o utilizador clica numa tecla
+
 #   Para ir buscar as categorias existentes ao ficheiro da categorias
     f = open(Path('../Projeto_AED/files/categorias.txt'),'r')
     categories = f.readlines()
@@ -183,15 +204,18 @@ class Add_Post():
         for category in categories:
            file.write(category+'\n')
         file.close()
-    #Adicionar informação de post ao ficheiro 'all-posts.txt
+
+    # Adicionar informação de post ao ficheiro 'all-posts.txt
     for i in range(4):
         os.chdir('..')  # Voltar quatro pastas atras
     os.chdir('files')
-    f_all_posts= open('all-posts.txt', 'w', encoding='utf-8')
+    f_all_posts= open('all-posts.txt', 'a', encoding='utf-8')
     f_all_posts.write('\n'+self.username+';')
     for category in categories:
        f_all_posts.write(category+';')
     f_all_posts.close()
+    os.chdir('..\\') # Voltar uma pasta atrás
+
 
 class Create_Album():
   def __init__(self, tl_create_album, username):
@@ -209,7 +233,7 @@ class Create_Album():
     self.add_post_lbl = Label(self.tl_create_album, text = 'Create Album', font = ('Roboto', 28), bg = 'lightgrey').place(x = 100, y = 10)
     
 #   Botão que chama a função "select_image" que é responsável por adicionar a imagem selecionada ao ecrã
-    self.add_photo_btn = Button(self.tl_create_album, text = 'Add Images', width = 10, height = 2, bd = 2, command = self.select_image).place(x = 70, y = 310)
+    self.add_photo_btn = Button(self.tl_create_album, text = 'Add Images', width = 10, height = 2, bd = 2).place(x = 70, y = 310)
 
 #   Criar um Canvas para de seguida adicionar a fotografia selecionada pelo utilizador
     self.cnv_image = Canvas(self.tl_create_album, width = 400, height = 200)
@@ -226,20 +250,20 @@ class Create_Album():
     self.btn_create_album= Button(self.tl_create_album, width=10, height=1, text='Create', font=('Roboto', 12), fg='#fff', bg='green', command=self.func_create_album).place(x= 70, y= 450)
 
     
-  def select_image(self):
-    """
-    Esta função permite ao utilizador escolher uma imagem guardada no seu disco, escolhê-la, \n
-    para depois postar na app.
-    """
-#   Vai buscar o nome do ficheiro que o utilizador inseriu
-    filename = filedialog.askopenfilename(title = 'Select Image', initialdir = './images/icons',
-              filetypes = (('PNG files','*.png'),('GIF files','*.gif'),('All Files','*.*')))
+#   def select_image(self):
+#     """
+#     Esta função permite ao utilizador escolher uma imagem guardada no seu disco, escolhê-la, \n
+#     para depois postar na app.
+#     """
+# #   Vai buscar o nome do ficheiro que o utilizador inseriu
+#     filename = filedialog.askopenfilename(title = 'Select Image', initialdir = './images/icons',
+#               filetypes = (('PNG files','*.png'),('GIF files','*.gif'),('All Files','*.*')))
 
-#   Para depois defini-la e adicioná-la ao Canvas
-    image = PhotoImage(file = filename)
+# #   Para depois defini-la e adicioná-la ao Canvas
+#     image = PhotoImage(file = filename)
 
-#   Adicionar a imagem ao Canvas
-    self.cnv_image.itemconfig(self.image_id, image=image)
+# #   Adicionar a imagem ao Canvas
+#     self.cnv_image.itemconfig(self.image_id, image=image)
 
 
   def func_create_album(self):

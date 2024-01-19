@@ -41,12 +41,12 @@ class App():
 
        
 #       Botão com um icon para o utilizador sair da app
-        # icon = Image.open(Path('../Projeto_AED/images/icons/logout_icon.png')).resize((80,80)) # Platform independent
-        # icon = ImageTk.PhotoImage(icon)
-        # self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg='#333', command = self.leave_app)
-        # self.leave_app_btn.image = icon
-        # self.leave_app_btn.place( x = 800, y = 200)
-        # self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
+        icon = Image.open(Path('../Projeto_AED/images/icons/exit.png')).resize((80,80)) 
+        icon = ImageTk.PhotoImage(icon)
+        self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg= 'white', command = self.leave_app)
+        self.leave_app_btn.image = icon
+        self.leave_app_btn.place( x = 0, y = 0)
+        self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
 
 
     def go_to_sign_up(self):

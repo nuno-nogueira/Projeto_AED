@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Combobox
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFilter
 from admins import admins
 from add_content import Add_Post, Create_Album
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
@@ -43,7 +43,7 @@ class Main_App:
 
 #           Frame onde aparece os botões de 'See Profile' e 'Log Out'
 #           Aparecem quando o utilizador clica no botão com o icone do perfil
-            self.profile_click_frame = Frame(self.homepage, width = 200, height = 135, bg = 'lightgrey')
+            self.profile_click_frame = Frame(self.homepage, width = 200, height = 135, bg = 'white')
 
 #           Frame onde aparece a notificação mais recente e um botão que vai dar á página com todas as notificações
 #           Aparecem quando o utilizador clica no botão com o icone da notificação
@@ -140,7 +140,6 @@ class Main_App:
                 if admin == True:
                     self.btn_tl_admin.place(x = 0, y = 45)
         
-
         def notifications_click(self):
             """
             Esta função cria um Frame que aparece quando o utilizador clica no icon das notificações \n
@@ -210,9 +209,9 @@ class Main_App:
         
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
 #           Aparece os botões de Fazer um Post e Criar um Album
-            self.add_content_frame = Frame(self.homepage, width = 198, height = 125, bg = '#28942a')
-            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 16, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
-            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 16, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
+            self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
+            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
+            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
 
 
 #       ----------- + POST Button ---------------------------------------------------
@@ -307,7 +306,7 @@ class Main_App:
             # Cada Post vai ser um Button
             for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
                 post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
-                
+
                 # Obter a imagem que está dentro da folder, que por sua vez está dentro do Álbum 
                 image_files = []
                 extensions = ('.png', '.jpg', '.jpeg', '.gif')
@@ -316,55 +315,120 @@ class Main_App:
                     for i in os.listdir(post_path): #por cada Post path
                         if i.lower().endswith(extension):
                             matching_files.append(i) #reunimos as imagens numa lista
-                                        
+
                     image_files.extend(matching_files) #adicionar os matching_files à lista image_files
 
                 if image_files: #se a lista tiver pelo menos um elemento, a condição fica True e a próximas linhas são executadas
                     image_path = os.path.join(post_path, image_files[0]) #juntar o path do post com a imagem
-                    
                     image = Image.open(image_path)
                     image = image.resize((150, 150)) # width, height
                     photo = ImageTk.PhotoImage(image) #para lembrar o Python que não pedi para apagar nada
 
+                    resized_image = Image.open(image_path)
+                    resized_image = resized_image.resize((450, 350))
+
+                    # Criar um novo PhotoImage da imagem redimensionada
+                    resized_photo = ImageTk.PhotoImage(resized_image)
+
                     btn_my_post = Button(self.f_my_album, image=photo, width=150, height=150,
-                                        command=lambda: self.open_my_post(self.f_my_album))
+                                        command=lambda img=resized_photo, image_path=image_path: self.open_my_post(self.f_my_album, image_path, img))
                     btn_my_post.image = photo  #''garbage collection'' para a imagem não ser apagada automaticamente para criar memória livre
                 else:
                     btn_my_post = Button(self.f_my_album, text=i, width=40, height=5,
-                                        command=lambda: self.open_my_post(self.f_my_album))
+                                        command=lambda img=photo: self.open_my_post(self.f_my_album, image_path, img))
 
                 btn_my_post.grid(column=0, row=row, padx=30, pady=30)
-        
 
 #       ----- Abrir um Post ao clicar no meu álbum de fotos ---------- 
 
-        def open_my_post(self, f_my_album):
+        def open_my_post(self, f_my_album, image_path, image):
             '''
             Cada Post abre um TopLevel()
             '''
             tl_my_post= Toplevel(f_my_album)
-            tl_my_post.geometry('800x500+100-100') 
+            tl_my_post.geometry('900x600+100-100') 
             tl_my_post.title('MyPhotos')
             tl_my_post.resizable(0,0) 
 
             # Canvas com a Imagem do Post
-            canvas = Canvas(tl_my_post, width=300, height=400)
-            canvas.place(x=30,y=30)
-            # Buscar Imagem
-            bg_image = Image.open(Path(""))
-            # Redimensionar Imagem
-            resized_bg_image = bg_image.resize((1000, 600))  #Ajustar tamanho da Imagem (width, height)
-            # PhotoImage
-            self.bg_img = ImageTk.PhotoImage(resized_bg_image)
-            # Adicionar a Imagem ao Canvas
-            canvas.create_image(500, 200, anchor=CENTER, image=self.bg_img)
-
-
-
+            canvas = Canvas(tl_my_post, width=450, height=350)
+            canvas.place(x=20,y=20)
             
+            # Redimensionar usando o método zoom
+            canvas.create_image(225, 175, anchor=CENTER, image=image)
 
-            
-            
+            # Garantir que não seja coletada pelo garbage collector
+            canvas.image = image
 
+            # -----------DAR GOSTOS E FAVORITOS --------
+            # Para voltar uma pasta atras para depois encontrar o ficheiro .txt
+            path = os.path.dirname(image_path)
+            for  i in os.listdir(path): 
+                # Para encontrar o ficheiro .txt!!
+                if i.find('.txt') != -1:
+                    post_name = os.path.join(path, i)
+
+            # Para aparecer as informações do post (nome, descrição, data)
+            f = open(post_name, 'r')
+            content = [line.strip('\n') for line in f.readlines()] # Para remover line breaks de cada item na lista
+            f.close()
+            post_name = content[0]
+            post_date = content[1]
+            post_description = content[2]
+
+            # Botão para dar gosto // Remover gosto
+            self.like_btn = Button(tl_my_post, text = 'Like', width = 8, bg = '#E04F5F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.like_and_dislike)
+            self.like_btn.place(x = 360, y = 370)
+
+            self.likes = Label(tl_my_post, text = 0, fg = '#E04F5F', font = ('Roboto', 14)).place(x = 445, y = 370)
+
+            # Botão para adicionar // Remover dos favoritos
+            self.favorite_btn = Button(tl_my_post, text = 'Add To Favorites', width = 20, bg = '#FFCB2F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.add_favorites)
+            self.favorite_btn.place(x = 150, y = 370)
+
+            # ----------- Nome do post / descrição / quando foi postado
+            self.post_name_lbl = Label(tl_my_post, text= post_name, font = ('Roboto', 18), bg = '#F0F0F0').place(x = 20, y = 410)
+            
+            self.post_date_lbl = Label(tl_my_post, text= "Posted on: "+ post_date, font = ('Roboto', 8),  bg = '#F0F0F0').place( x = 20, y = 450)
+            
+            self.post_description_lbl = Label(tl_my_post, text = post_description, font = ('Roboto', 10), bg = '#F0F0F0').place( x = 20, y = 465)
         
+            # ------------------- Comentários
+            self.comments_lbl = Label(tl_my_post, text = 'Comments', font = ('Roboto', 22), bg = '#F0F0F0').place(x = 500, y = 10)
+            self.comments_frame = Frame(tl_my_post, width = 380, height = 1000, relief = 'sunken', bd = '2', bg = "#F0F0F0")
+            self.comments_frame.place(x = 500, y = 70)
+
+            self.add_comment = Text(self.comments_frame, width = 40, height = 4, font = ('Roboto', 8))
+            self.add_comment.place(x = 10, y = 5)
+
+            self.add_comment_btn = Button(self.comments_frame, text = 'Add Comment', relief = 'raised', bg = 'lightgrey').place(x = 255, y = 35)
+            self.chars_warning = Label(self.comments_frame, text = '', font = ('Roboto', 10), bg = '#F0F0F0')
+            self.chars_warning.place(x = 10, y = 65)
+
+            def count_chars_in_comment(chars):
+                """
+                Função que conta o nº de caracteres inseridos no widgets Text \n
+                O limite é de 100 caracteres \n 
+                """
+                description_str = self.add_comment.get('1.0', 'end-1c') # Exceto o último line break
+                line_breaks = description_str.count('\n') # Para as line breaks não contarem como caracteres
+                chars_number = len(description_str) - line_breaks
+                if (chars_number > 100):
+                    self.add_comment.delete('end-2c')
+                    self.add_comment.configure(bg = '#e35959')
+                    self.chars_warning.config(text = 'You have exceeded the 100 characters limit!', bg = '#e35959')
+          
+            self.add_comment.bind('<KeyRelease>', count_chars_in_comment) # Para chamar a função cada vez que o utilizador clica numa tecla
+
+        def like_and_dislike(self):
+            if self.like_btn.cget("text") == "Like":
+                self.like_btn.config(text = "Dislike")
+            else: 
+                self.like_btn.config(text = "Like")
+
+        def add_favorites(self):
+            if self.favorite_btn.cget("text") == "Add To Favorites":
+                self.favorite_btn.config(text = "Remove from Favorites")
+            else:
+                self.favorite_btn.config(text = "Add To Favorites")
             
