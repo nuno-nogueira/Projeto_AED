@@ -6,6 +6,7 @@ from PIL import Image, ImageTk, ImageFilter
 from admins import admins
 from add_content import Add_Post, Create_Album
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
+from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar 
 import os
 
 class Main_App:
@@ -192,9 +193,15 @@ class Main_App:
             f_categ.close()        
             for line in lines_categ:
                 self.lbox_categ.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
+            # Widget Pick a Date
+            self.cal = DateEntry(self.f_search, width=12, background='purple', foreground='white', borderwidth=2)
+            self.cal.place(x=20, y=200)
+            # Button para selecionar uma data
+            select_button = Button(self.f_search, text="Select Date", command=self.func_selected_date)
+            select_button.place(x=20, y=220)
             #Button para Pesquisar
             self.btn_search= Button(self.f_search, height=2, text='Search for results', bg='lightblue', 
-                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ))
+                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
             self.btn_search.place(x=20,y=240) 
 
 #           Frame para Button 'My Albums'
@@ -213,7 +220,15 @@ class Main_App:
             self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username))
             self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username))
 
+#       -------- FUNÇÕES ------------------------------------------------------------
 
+        def func_selected_date(self):
+                    '''
+                    Ao carregar 
+                    '''
+                    
+                    self.selected_date = self.cal.get_date() #pegar na data selecionada
+                    print('selected date:', self.selected_date)
 #       ----------- + POST Button ---------------------------------------------------
         def show_add_content_frame(self):
             """

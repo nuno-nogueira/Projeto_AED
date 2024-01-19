@@ -185,7 +185,7 @@ class Add_Post():
   def create_post(self):
     data = datetime.datetime.now()
     name = self.photo_name.get()
-    date = data.strftime("%d/%m/%Y") + ';' + data.strftime("%H:%M:%S")
+    date = data.strftime("%Y-%m-%d") + ';' + data.strftime("%H:%M")
     description = self.description.get('0.0', END)
     categories = self.categories_chosen.get('0', END)
     album = self.add_to_album.get()
@@ -210,11 +210,18 @@ class Add_Post():
         os.chdir('..')  # Voltar quatro pastas atras
     os.chdir('files')
     f_all_posts= open('all-posts.txt', 'a', encoding='utf-8')
-    f_all_posts.write('\n'+self.username+';')
-    for category in categories:
-       f_all_posts.write(category+';')
+    f_all_posts.write('\n'+ self.username + ';' + category + ';' + date)
     f_all_posts.close()
     os.chdir('..\\') # Voltar uma pasta atrás
+    # for i in range(4):
+    #     os.chdir('..')  # Voltar quatro pastas atras
+    # os.chdir('files')
+    # f_all_posts= open('all-posts.txt', 'a', encoding='utf-8')
+    # f_all_posts.write('\n'+ self.username+ ';'+ date)
+    # for category in categories:
+    #    f_all_posts.write(category+';')
+    # f_all_posts.close()
+    # os.chdir('..\\') # Voltar uma pasta atrás
 
 
 class Create_Album():
