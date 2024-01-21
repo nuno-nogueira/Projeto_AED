@@ -168,6 +168,7 @@ class Add_Post():
     name = self.photo_name.get()
     date = data.strftime("%Y-%m-%d") + ';' + data.strftime("%H:%M")
     description = self.description.get('1.0', 'end-1c')
+    description = description.replace('\n',' ')
     categories = self.categories_chosen.get('0', END)
     album = self.add_to_album.get()
     filename = self.filename
@@ -176,14 +177,14 @@ class Add_Post():
     os.chdir(album)
     os.mkdir(name)
     os.chdir(name)
-    user_directory = './users_photoalbums/' + self.username
     shutil.copy2(filename, os.getcwd())
     name = name + '.txt'
     with open(name, 'x') as file:
         name = name.replace('.txt','')
         file.write('{0}\n{1}\n{2}\n{3}'.format(username, name, date, description))
+        file.write(';')
         for category in categories:
-           file.write('\n'+category)
+           file.write('\n'+str(category))
         messagebox.showinfo('Sucess!','The post has been created! Go check it out in its corresponding album!')
         file.close()
     filename = 'comments.txt'
@@ -202,15 +203,6 @@ class Add_Post():
     f_all_posts.close()
     os.chdir('..\\') # Voltar uma pasta atrás
     self.tl_add_photo.destroy()
-    # for i in range(4):
-    #     os.chdir('..')  # Voltar quatro pastas atras
-    # os.chdir('files')
-    # f_all_posts= open('all-posts.txt', 'a', encoding='utf-8')
-    # f_all_posts.write('\n'+ self.username+ ';'+ date)
-    # for category in categories:
-    #    f_all_posts.write(category+';')
-    # f_all_posts.close()
-    # os.chdir('..\\') # Voltar uma pasta atrás
 
   def go_back(self):
      """
