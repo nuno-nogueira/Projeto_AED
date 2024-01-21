@@ -1,5 +1,4 @@
-Food
-Anime
-Photography
-Animals
-Spring
+food
+anime
+photography
+animals
