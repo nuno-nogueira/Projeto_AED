@@ -16,18 +16,18 @@ class Add_Post():
   Todos os widgets da janela "Add Post".
   Todas as funções relacionadas.
   """
-  def __init__(self, tl_add_photo, homepage, username):
+  def __init__(self, tl_add_photo, homepage, username, window):
     """
     Permite criar uma window que é um objeto da classe App \n
     Usado para configurar uma janela nova TopLevel
     """
+    self.tl_add_photo = Toplevel(window)
     self.tl_add_photo = tl_add_photo
     self.username = username
-
 #   Icon para voltar á página principal
     icon = Image.open(Path('../Projeto_AED/images/icons/go_back_icon.png')).resize((50, 50))
     icon = ImageTk.PhotoImage(icon)
-    self.go_back_btn = Button(self.tl_add_photo, image = icon, bd = 0, bg = 'lightgrey', command = self.go_back)
+    self.go_back_btn = Button(self.tl_add_photo, image = icon, bd = 0, bg = 'lightgrey', command =  self.go_back)
     self.go_back_btn.image = icon
     self.go_back_btn.place(x = 0, y = 0)
 
@@ -56,7 +56,6 @@ class Add_Post():
     self.add_to_album_lbl = Label(self.tl_add_photo, text = 'Add to Album:', font = ('Roboto', 18), bg = 'lightgrey').place(x = 70, y = 450)
     self.add_to_album = Combobox(self.tl_add_photo, height = 1, width = 15, values = self.albums_list, font = ('Roboto', 14))
     self.add_to_album.place(x = 70, y = 480)
-    self.create_album = Button(self.tl_add_photo, text = 'Create Album', font = ('Roboto', 14), bg = '#28942a', fg = 'white', bd = 0, width = 15, height = 2, command = lambda:self.go_to_albums(homepage, username)).place(x = 270, y = 480)
 
 #   Label & Text da descrição da fotografia/post
     self.description_lbl = Label(self.tl_add_photo, text = 'Description', font = ('Roboto', 18), bg = "lightgrey").place(x = 600, y = 50)
@@ -69,20 +68,24 @@ class Add_Post():
        """
        Função que conta o nº de caracteres inseridos no widgets Text \n
        O limite é de 150 caracteres \n 
-       Se chegar a 130, aparece o aviso, e se chegar a 150, não deixa escrever mais!
+       Se chegar a 130, aparece um aviso, e se chegar a 150, não deixa escrever mais!
        """
-       description_str = self.description.get('1.0', 'end-1c') # Exceto o último line break
+       description_str = self.description.get('1.0', 'end-1c') # 'end-1c' é o caracter anterior ao último
        line_breaks = description_str.count('\n') # Para as line breaks não contarem como caracteres
-       chars_number = len(description_str) - line_breaks
-       if (chars_number > 150):
+       chars_number = len(description_str) - line_breaks # Subtrair o nº de caracteres pelo nº de line breaks
+       if (chars_number >= 150):
           self.description.delete('end-2c')
           self.description.configure(bg = '#e35959')
           self.chars_warning.config(text = 'You have exceeded the 150 characters limit!', bg = '#e35959')
        if (chars_number >= 130 and chars_number < 150):
           self.description.configure(bg = '#d3e359')
           self.chars_warning.config(text = 'You are reaching the 150 characters limit!', bg = '#d3e359')
-          
+       if (chars_number < 130):
+          self.description.configure(bg = 'white')
+          self.chars_warning.config(text = '', bg = 'lightgrey')
+
     self.description.bind('<KeyRelease>', count_chars_in_description) # Para chamar a função cada vez que o utilizador clica numa tecla
+    
 
 #   Para ir buscar as categorias existentes ao ficheiro da categorias
     f = open(Path('../Projeto_AED/files/categorias.txt'),'r')
@@ -118,7 +121,7 @@ class Add_Post():
     # Vai buscar o nome do ficheiro que o utilizador inseriu
     self.tl_add_photo.attributes('-topmost', 'false') # Para a janela deixar de ser toplevel (para acessar o explorador de ficheiros)
     self.filename = filedialog.askopenfilename(title = 'Select Image',
-                                          filetypes = (("PNG files","*.png"),("GIF files","*.gif"),("JPG files","*.jpg"),("All Files","*.*")))
+                                          filetypes = (("PNG files","*.png"),("GIF files","*.gif"),("JPG files","*.jpg"),("WEBP files","*.webp"),("All Files","*.*")))
 
     self.image = Image.open(self.filename) # Abrir o ficheiro
     resized_image = self.image.resize((400, 200)) # Mudar tamanho
@@ -159,34 +162,12 @@ class Add_Post():
        self.categories_chosen.delete(selected)
 
 
-  def go_back(self):
-     """
-     Esta função destroi a janela atual, voltando para a página principal
-     """
-     self.tl_add_photo.destroy()
- 
-
-  def go_to_albums(self, homepage, username):
-    """
-    Esta função destroi a janela atual, e cria a uma janela para o utilizador criar um
-    """
-    self.username = username
-
-    self.tl_add_photo.destroy()
-    self.tl_create_album = Toplevel(homepage)
-    self.tl_create_album.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
-    self.tl_create_album.title('myPhotos')
-    self.tl_create_album.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
-    self.tl_create_album.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
-    self.tl_create_album.configure(bg = 'lightgrey')
-    Create_Album(self.tl_create_album, username)
-     
-
   def create_post(self):
+    username = self.username
     data = datetime.datetime.now()
     name = self.photo_name.get()
     date = data.strftime("%Y-%m-%d") + ';' + data.strftime("%H:%M")
-    description = self.description.get('0.0', END)
+    description = self.description.get('1.0', 'end-1c')
     categories = self.categories_chosen.get('0', END)
     album = self.add_to_album.get()
     filename = self.filename
@@ -200,19 +181,27 @@ class Add_Post():
     name = name + '.txt'
     with open(name, 'x') as file:
         name = name.replace('.txt','')
-        file.write('{0}\n{1}\n{2}'.format(name, date, description))
+        file.write('{0}\n{1}\n{2}\n{3}'.format(username, name, date, description))
         for category in categories:
-           file.write(category+'\n')
+           file.write('\n'+category)
+        messagebox.showinfo('Sucess!','The post has been created! Go check it out in its corresponding album!')
         file.close()
-
+    filename = 'comments.txt'
+    with open(filename, 'x') as file:
+       file.close()
+    
     # Adicionar informação de post ao ficheiro 'all-posts.txt
     for i in range(4):
         os.chdir('..')  # Voltar quatro pastas atras
     os.chdir('files')
     f_all_posts= open('all-posts.txt', 'a', encoding='utf-8')
-    f_all_posts.write('\n'+ self.username + ';' + category + ';' + date)
+    f_all_posts.write('\n'+ self.username + ';')
+    for category in categories:
+        f_all_posts.write(category + ';')
+    f_all_posts.write(date)
     f_all_posts.close()
     os.chdir('..\\') # Voltar uma pasta atrás
+    self.tl_add_photo.destroy()
     # for i in range(4):
     #     os.chdir('..')  # Voltar quatro pastas atras
     # os.chdir('files')
@@ -223,9 +212,16 @@ class Add_Post():
     # f_all_posts.close()
     # os.chdir('..\\') # Voltar uma pasta atrás
 
+  def go_back(self):
+     """
+     Esta função destroi a janela atual, voltando para a página principal
+     """
+     self.tl_add_photo.destroy()
+ 
 
 class Create_Album():
-  def __init__(self, tl_create_album, username):
+  def __init__(self, tl_create_album, username, window):
+    self.tl_add_photo = Toplevel(window)
     self.tl_create_album = tl_create_album
     self.username = username
 
@@ -287,8 +283,6 @@ class Create_Album():
         messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.') 
         self.created_album=1
     return
-
-
 
   def go_back(self):
      """

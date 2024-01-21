@@ -37,7 +37,7 @@ class App():
         self.login_button = Button(self.window, text = 'Login',bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_login).place(x = 65, y = 435)
 
 #       Botão para passar para o frame para criar uma conta
-        self.sign_up_button = Button(self.window, text = 'Sign Up',bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_sign_up).place(x = 325, y = 435)
+        self.sign_up_button = Button(self.window, text = 'Sign Up', bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_sign_up).place(x = 325, y = 435)
 
        
 #       Botão com um icon para o utilizador sair da app
@@ -76,7 +76,7 @@ class App():
            
 window = Tk() #Chama a função Tkinter e cria uma janela
 window.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
-window.title('myPotos')
+window.title('myPhotos')
 window.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
 window.configure(bg = '#fff')
 

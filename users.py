@@ -130,8 +130,10 @@ class Sign_Up():
 
 #       Criar folder no momento de criar conta para armazenar os albums de fotografias desse user
         os.chdir('users_photoalbums')
-        os.mkdir(self.username)
-
+        os.mkdir(self.username) # Pasta para o utilizador
+        os.chdir(self.username)
+        os.mkdir(self.username) # Pata para um primeiro album (por default)
+        os.chdir('..\\..') # Voltar duas pastas atras
 #----------------------------------LOGIN-----------------------------------------------------------
 
 class Login():
