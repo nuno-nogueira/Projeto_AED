@@ -1,4 +1,3 @@
-user;category;yyyy-mm-dd;h:m
 sandra;anime;2024-01-15;20:35
 sandra;anime;2024-01-15;20:45
 sandra;animals;2024-01-19;18:35
@@ -6,6 +5,3 @@ sandra;photography;2024-01-19;18:53
 sandra;photography;2024-01-19;18:56
 sandra;animals;2024-01-19;19:17
 sandra;food;2024-01-19;19:18
-nuno;food;2024-01-19;17:19
-nuno;food;2024-01-19;17:08
-nuno;photography;2024-01-18;18:56

@@ -1,4 +1,3 @@
 sandra@admin;sandra;123
 nuno@admin;nuno;456
 ken@admin;ken;789
-teste1@123;teste1;1
