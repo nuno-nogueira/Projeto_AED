@@ -61,21 +61,23 @@ class Posts():
         self.like_btn = Button(self.tl_my_post, text = 'Like', width = 8, bg = '#E04F5F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.like_and_dislike)
         self.like_btn.place(x = 360, y = 370)
 
-        self.likes = Label(self.tl_my_post, text = 0, fg = '#E04F5F', font = ('Roboto', 14)).place(x = 445, y = 370)
+        self.likes = Label(self.tl_my_post, text = 0, fg = '#E04F5F', bg = 'lightgrey', font = ('Roboto', 14)).place(x = 445, y = 370)
 
 #       Botão para adicionar // Remover dos favoritos
         self.favorite_btn = Button(self.tl_my_post, text = 'Add To Favorites', width = 20, bg = '#FFCB2F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.add_favorites)
         self.favorite_btn.place(x = 150, y = 370)
 
 #       ----------- Nome do post / descrição / quando foi postado
-        self.post_name_lbl = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = '#F0F0F0')
+        self.post_name_lbl = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = 'lightgrey')
         self.post_name_lbl.place(x = 20, y = 410)
             
-        self.post_date_lbl = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = '#F0F0F0')
+        self.post_date_lbl = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
         self.post_date_lbl.place( x = 20, y = 450)
-            
-        self.post_description_lbl = Label(self.tl_my_post, text = post_description, font = ('Roboto', 10), bg = '#F0F0F0')
-        self.post_description_lbl.place( x = 20, y = 465)
+
+        self.post_description = Text(self.tl_my_post, font = ('Roboto', 10), width = 30, height = 8, bd = 0, bg = 'lightgrey')
+        self.post_description.place( x = 20, y = 465)
+        self.post_description.insert(END, post_description)
+        self.post_description.config(state = 'disabled')
         
 #       ------------------- Comentários --------------------------
         self.comments_lbl = Label(self.tl_my_post, text = 'Comments', font = ('Roboto', 22), bg = 'lightgrey').place(x = 500, y = 10)
@@ -110,7 +112,7 @@ class Posts():
                 self.chars_warning.config(text = 'You have exceeded the 100 characters limit!', bg = '#e35959')
             else:
                 self.add_comment.configure(bg = 'white')
-                self.chars_warning.config(text = '', bg = 'lightgrey')
+                self.chars_warning.config(text = '', bg = '#F0F0F0')
         self.add_comment.bind('<KeyRelease>', count_chars_in_comment) # Para chamar a função cada vez que o utilizador clica numa tecla
 
     def like_and_dislike(self):
@@ -136,7 +138,7 @@ class Posts():
         data = datetime.datetime.now()
         date = data.strftime('%b %d') + ', ' + data.strftime('%H:%M')
         f = open(comments_file, 'a', encoding = 'utf-8')
-        f.write(author + ';' + date + ';' + comment + '\n')
+        f.write(author + ',' + date + ',' + comment + ';' + '\n')
         f.close()
         self.update_comments(comments_file)
 
@@ -156,9 +158,9 @@ class Posts():
         dates = [] # Armazenar as horas em que cada comentário foi feito
         comments = [] # Armazenar a lista de comentários escritos
         for line in comments_list: #Por cada folder
-            comment_author.append(line[:line.find(';')])
-            dates.append(line[line.find(';') + 1:line.rfind(';')])
-            comments.append(line[line.rfind(';') + 1:])
+            comment_author.append(line[:line.find(',')])
+            dates.append(line[line.find(',') + 1:line.rfind(',')])
+            comments.append(line[line.rfind(',') + 1:line.rfind(';')])
 #       Variaveis para guardar o posicionamento das Labels e depois incrementar
             x_author = 5 
             y_author = 90
@@ -175,6 +177,7 @@ class Posts():
                 date_lbl.place(x = x_date, y = y_date)
                 y_date += 70
             for comment in comments:
+                self.add_comment.delete('0.0', END)
                 comment_lbl = Label(self.comments_frame, text = comment, bg = '#f0f0f0', font = ('Roboto', 8))
                 comment_lbl.place(x = x_comment, y = y_comment)
                 y_comment += 70
@@ -318,6 +321,7 @@ class Edit():
             messagebox.showerror('Error','Select a category first to delete it!')
         else:
             self.categories_chosen.delete(selected)
+
 
     def save_changes(self, path, who_posted):
         new_name = self.name_edit.get()
