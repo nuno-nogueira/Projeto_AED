@@ -3,11 +3,15 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk, ImageFilter
+
 from admins import admins
 from posts import Posts
+from dashboard import dashboard
 from add_content import Add_Post, Create_Album
+
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
 from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar 
+
 import os
 import datetime
 
@@ -78,21 +82,21 @@ class Main_App:
             self.profile_icon.place( x = 940, y = 5)
  
 
-#           Icone da dashboard (FONTE - SITE FLATICON)
-#           Janela com várias estatísticas do utilizador
-            icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((50,50))
+#           ------- Janela com várias estatísticas do utilizador ----------
+#           Icon de notificações(FONTE - SITE FLATICON)
+            icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((40,40))
             icon3 = ImageTk.PhotoImage(icon3)
-            self.bell_icon = Button(self.nav_bar, image = icon3, bg = '#333333', bd = 0)
-            self.bell_icon.image = icon3
-            self.bell_icon.place(x = 870, y = 5)
-
-
-#           Icone de notificações (FONTE - SITE FLATICON)
-            icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((50,50))
+            self.dashboard_icon = Button(self.nav_bar, image = icon3, bd = 0, bg = '#333333', 
+                                         command = lambda: self.dashboard_tl(self.homepage))
+            self.dashboard_icon.image = icon3
+            self.dashboard_icon.place(x = 800, y = 8)
+#           Icon da dashboard (FONTE - SITE FLATICON)
+            icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((40,40))
             icon4 = ImageTk.PhotoImage(icon4)
-            self.dashboard_icon = Button(self.nav_bar, image = icon4, bd = 0, bg = '#333333', command = self.notifications_click)
-            self.dashboard_icon.image = icon4
-            self.dashboard_icon.place(x = 800, y = 5)
+            self.bell_icon = Button(self.nav_bar, image = icon4, bg = '#333333', bd = 0,
+                                    command= self.notifications_click)
+            self.bell_icon.image = icon4
+            self.bell_icon.place(x = 870, y = 8)
 
 #           Botão em que faz com que o utilizador saia da conta com que está conectado e volte à página principal
             self.log_out = Button(self.profile_click_frame, text = 'Log Out', font = ('Roboto', 16), bg = 'lightgrey', bd = '3', relief = 'raised', width = 10, command = self.logging_out)
@@ -177,6 +181,20 @@ class Main_App:
             self.tl=tl
             from search import func_search_results_window
 
+#           --- Imagem background ---------
+            # Canvas
+            canvas = Canvas(self.homepage, width=800, height=540)
+            canvas.place(x=200,y=0)
+            # Buscar Imagem
+            bg_image = Image.open(Path("./images/backgrounds/main_background.jpg"))
+            # Redimensionar Imagem
+            resized_bg_image = bg_image.resize((800, 540))  #Ajustar tamanho da Imagem (width, height)
+            # PhotoImage
+            self.bg_img = ImageTk.PhotoImage(resized_bg_image)
+            # Adicionar a Imagem ao Canvas
+            canvas.create_image(400, 270, anchor=CENTER, image=self.bg_img)
+
+
 #           --- Frame de Pesquisa ---
             self.f_search= Frame(self.tl, width=200, height=300)
             self.f_search.place(x=0,y=60)
@@ -214,8 +232,7 @@ class Main_App:
             self.lbl_btn.place(x=20,y=20)
 
 #           Botão para adicionar um post
-            self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 800, y = 150)
-        
+            self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 0, y = 450)
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
 #           Aparece os botões de Fazer um Post e Criar um Album
             self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
@@ -274,10 +291,10 @@ class Main_App:
             Abre uma Frame para mostrar os albums do user
             '''
             #Frame 
-            self.f_my_albums= Frame(tl, width=600, height=600, bg='lightblue')
+            self.f_my_albums= Frame(tl, width=800, height=540, bg='#fff')
             self.f_my_albums.place(x=200,y=60)
             btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
-            btn_destroy_frame.place(x=550,y=30)
+            btn_destroy_frame.place(x=600,y=10)
             
 #           --- Fazer os Álbums aparecer:
             
@@ -291,22 +308,25 @@ class Main_App:
                 if os.path.isdir(full_path): #se for uma folder
                     album_folders.append(i) #Adiciona o nome desse album á lista
             
-            # Criar um Button para cada Álbum
-            for album_folder in album_folders:
-                btn_my_album = Button(self.f_my_albums, text=album_folder, width=40, height=5, 
-                                      command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
-                btn_my_album.pack(padx=30, pady=30)
+            for idx, album_folder in enumerate(album_folders):
+                # Calculate row and column based on the index
+                row = idx // 4
+                col = idx % 4
+
+                btn_my_album = Button(self.f_my_albums, text=album_folder, bg='#f8d775', width=18, height=5,
+                                    command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
+                btn_my_album.grid(row=row, column=col, padx=30, pady=30)
 
         def open_my_album_frame(self, tl, album_folder, username):
             '''
             Cada Álbum abre uma nova Frame com Publicações
             '''
             # Frame
-            self.f_my_album= Frame(tl, width=600, height=600, bg='pink')
+            self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
             self.f_my_album.place(x=200,y=60)
             # Button Sair Frame
             btn_destroy_frame2= Button(self.f_my_album, text=' X ', command=self.f_my_album.destroy)
-            btn_destroy_frame2.place(x=550,y=30)
+            btn_destroy_frame2.place(x=600,y=10)
 
 #           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
             
@@ -319,7 +339,30 @@ class Main_App:
                 full_path = os.path.join(album_path , i) #está a juntar a folder(álbum) com a folder(post) em vez de usar concatenação e '\\'
                 if os.path.isdir(full_path): #se full_path for uma folder
                     my_album_post.append(i) #Adiciona o nome desse Post à lista
-                    
+
+
+
+            # Create a Canvas widget to contain the frame and the scrollbar
+            canvas = Canvas(self.f_my_album, width=600, height=600, bg='pink')
+            canvas.grid(row=0, column=0, sticky="nsew")  # Use grid to make the canvas expandable
+
+            # Create a Frame inside the Canvas to hold your buttons
+            frame_inside_canvas = Frame(canvas, bg='pink')
+            canvas.create_window((0, 0), window=frame_inside_canvas, anchor="nw")
+
+            # Create a vertical scrollbar
+            scrollbar = Scrollbar(self.f_my_album, orient="vertical", command=canvas.yview)
+            scrollbar.grid(row=0, column=1, sticky="ns")  # Place scrollbar on the right side
+
+            # Configure the canvas to scroll vertically
+            canvas.configure(yscrollcommand=scrollbar.set)
+
+            # Add buttons to the frame_inside_canvas instead of directly to f_my_album
+            # for row, i in enumerate(my_album_post):
+
+
+
+
             # Cada Post vai ser um Button
             for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
                 post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
@@ -346,12 +389,22 @@ class Main_App:
 
                     # Criar um novo PhotoImage da imagem redimensionada
                     resized_photo = ImageTk.PhotoImage(resized_image)
-                    btn_my_post = Button(self.f_my_album, image=photo, width=150, height=150,
-                                        command=lambda img=resized_photo, image_path=image_path: Posts(self.f_my_album, image_path, img, self.username))
+                    btn_my_post = Button(frame_inside_canvas, image=photo, width=150, height=150,
+                                        command=lambda img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
                     btn_my_post.image = photo  #''garbage collection'' para a imagem não ser apagada automaticamente para criar memória livre
                 else:
-                    btn_my_post = Button(self.f_my_album, text=i, width=40, height=5,
-                                        command=lambda  img=resized_photo, image_path=image_path: Posts(self.f_my_album, image_path, img, self.username))
+                    btn_my_post = Button(frame_inside_canvas, text=i, width=40, height=5,
+                                        command=lambda  img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
 
-                btn_my_post.grid(column=0, row=row, padx=30, pady=30)
+                btn_my_post.grid(column=row % 3,  row=row // 3, padx=20, pady=40)
 
+            # Update the scroll region when the size of the frame_inside_canvas changes
+            frame_inside_canvas.update_idletasks()
+            canvas.config(scrollregion=canvas.bbox("all"))
+
+#             Icone da lupa (FONTE - SITE FLATICON)
+            # icon = Image.open('..\\Projeto_AED\\images\\icons\\search_icon.png').resize((27,27))
+            # icon = ImageTk.PhotoImage(icon)
+            # search_icon = Button(image = icon, bg = '#333333', bd = 0)
+            # search_icon.image = icon
+            # search_icon.place( x = 185, y = 15)

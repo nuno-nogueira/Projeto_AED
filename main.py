@@ -39,13 +39,12 @@ class App():
 #       Botão para passar para o frame para criar uma conta
         self.sign_up_button = Button(self.window, text = 'Sign Up', bg = '#fff', width=17, height=3, fg = '#333', font = ('Roboto', 16), command = self.go_to_sign_up).place(x = 325, y = 435)
 
-       
 #       Botão com um icon para o utilizador sair da app
-        icon = Image.open(Path('../Projeto_AED/images/icons/exit.png')).resize((80,80)) 
+        icon = Image.open(Path('../Projeto_AED/images/icons/exit.png')).resize((50,50))
         icon = ImageTk.PhotoImage(icon)
         self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg= 'white', command = self.leave_app)
         self.leave_app_btn.image = icon
-        self.leave_app_btn.place( x = 0, y = 0)
+        self.leave_app_btn.place( x = 860, y = 190)
         self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
 
 
