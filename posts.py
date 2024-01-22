@@ -54,27 +54,30 @@ class Posts():
         post_name = content[1]
         post_date = content[2]
         post_description = content[3]
+        post_description = post_description.strip(';')
         categories_chosen = content[4:]
 
 #       Botão para dar gosto // Remover gosto
         self.like_btn = Button(self.tl_my_post, text = 'Like', width = 8, bg = '#E04F5F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.like_and_dislike)
         self.like_btn.place(x = 360, y = 370)
 
-        self.likes = Label(self.tl_my_post, text = 0, fg = '#E04F5F', font = ('Roboto', 14)).place(x = 445, y = 370)
+        self.likes = Label(self.tl_my_post, text = 0, fg = '#E04F5F', bg = 'lightgrey', font = ('Roboto', 14)).place(x = 445, y = 370)
 
 #       Botão para adicionar // Remover dos favoritos
         self.favorite_btn = Button(self.tl_my_post, text = 'Add To Favorites', width = 20, bg = '#FFCB2F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.add_favorites)
         self.favorite_btn.place(x = 150, y = 370)
 
 #       ----------- Nome do post / descrição / quando foi postado
-        self.post_name_lbl = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = '#F0F0F0')
+        self.post_name_lbl = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = 'lightgrey')
         self.post_name_lbl.place(x = 20, y = 410)
             
-        self.post_date_lbl = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = '#F0F0F0')
+        self.post_date_lbl = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
         self.post_date_lbl.place( x = 20, y = 450)
-            
-        self.post_description_lbl = Label(self.tl_my_post, text = post_description, font = ('Roboto', 10), bg = '#F0F0F0')
-        self.post_description_lbl.place( x = 20, y = 465)
+
+        self.post_description = Text(self.tl_my_post, font = ('Roboto', 10), width = 30, height = 8, bd = 0, bg = 'lightgrey')
+        self.post_description.place( x = 20, y = 465)
+        self.post_description.insert(END, post_description)
+        self.post_description.config(state = 'disabled')
         
 #       ------------------- Comentários --------------------------
         self.comments_lbl = Label(self.tl_my_post, text = 'Comments', font = ('Roboto', 22), bg = 'lightgrey').place(x = 500, y = 10)
@@ -109,7 +112,7 @@ class Posts():
                 self.chars_warning.config(text = 'You have exceeded the 100 characters limit!', bg = '#e35959')
             else:
                 self.add_comment.configure(bg = 'white')
-                self.chars_warning.config(text = '', bg = 'lightgrey')
+                self.chars_warning.config(text = '', bg = '#F0F0F0')
         self.add_comment.bind('<KeyRelease>', count_chars_in_comment) # Para chamar a função cada vez que o utilizador clica numa tecla
 
     def like_and_dislike(self):
@@ -135,7 +138,7 @@ class Posts():
         data = datetime.datetime.now()
         date = data.strftime('%b %d') + ', ' + data.strftime('%H:%M')
         f = open(comments_file, 'a', encoding = 'utf-8')
-        f.write(author + ';' + date + ';' + comment + '\n')
+        f.write(author + ',' + date + ',' + comment + ';' + '\n')
         f.close()
         self.update_comments(comments_file)
 
@@ -155,9 +158,9 @@ class Posts():
         dates = [] # Armazenar as horas em que cada comentário foi feito
         comments = [] # Armazenar a lista de comentários escritos
         for line in comments_list: #Por cada folder
-            comment_author.append(line[:line.find(';')])
-            dates.append(line[line.find(';') + 1:line.rfind(';')])
-            comments.append(line[line.rfind(';') + 1:])
+            comment_author.append(line[:line.find(',')])
+            dates.append(line[line.find(',') + 1:line.rfind(',')])
+            comments.append(line[line.rfind(',') + 1:line.rfind(';')])
 #       Variaveis para guardar o posicionamento das Labels e depois incrementar
             x_author = 5 
             y_author = 90
@@ -174,6 +177,7 @@ class Posts():
                 date_lbl.place(x = x_date, y = y_date)
                 y_date += 70
             for comment in comments:
+                self.add_comment.delete('0.0', END)
                 comment_lbl = Label(self.comments_frame, text = comment, bg = '#f0f0f0', font = ('Roboto', 8))
                 comment_lbl.place(x = x_comment, y = y_comment)
                 y_comment += 70
@@ -186,6 +190,7 @@ class Edit():
         self.edit_post.resizable(0,0) 
         self.edit_post.configure(bg = 'lightgrey')
 
+        self.filename = ''
         self.edit_mode_lbl = Label(self.edit_post, text = 'Edit Mode', font = ('Roboto', 24), bg = 'lightgrey').place(x = 20, y = 5)
 
         self.edit_image = Button(self.edit_post, text = 'Edit Image', relief = 'raised', bg = '#F0F0F0', font = ('Roboto', 16), command = lambda: self.select_image(image_id, canvas))
@@ -202,7 +207,7 @@ class Edit():
         canvas.image = image
 
         self.name_edit_lbl = Label(self.edit_post, text = 'Edit Name:', font = ('Roboto', 18), bg = 'lightgrey').place(x = 20, y = 460)
-        self.name_edit = Entry(self.edit_post, text = who_posted, width = 20, font = ('Roboto', 14))
+        self.name_edit = Entry(self.edit_post, width = 20, font = ('Roboto', 14))
         self.name_edit.place(x = 20, y = 495)
         
         self.name_edit.delete(0, END) # Apagar o conteudo existente, para depois ser substituido pelo novo
@@ -247,13 +252,14 @@ class Edit():
             self.category_list.append(category)
         
         self.category_lbl = Label(self.edit_post, text = 'Edit Categories', font = ('Roboto', 18), bg = 'lightgrey').place(x = 520, y = 250)
-        self.categories = Combobox(self.edit_post, values = self.category_list, width = 15, font = ('Roboto', 14)).place(x = 520, y = 280)
+        self.categories = Combobox(self.edit_post, values = self.category_list, width = 15, font = ('Roboto', 14))
+        self.categories.place(x = 520, y = 280)
 
 #       Botão que adiciona uma categoria á imagem escolhida
-        self.add_category_btn = Button(self.edit_post, text = 'Add category', width = 15, height = 2, bd = 2).place(x = 520, y = 320)
+        self.add_category_btn = Button(self.edit_post, text = 'Add category', width = 15, height = 2, bd = 2, command = lambda: self.add_category(categories_chosen)).place(x = 520, y = 320)
 
 #       Botão que remove uma categoria
-        self.remove_category_btn = Button(self.edit_post, text = 'Remove category', width = 15, height = 2, bd = 2).place(x = 520, y = 400)
+        self.remove_category_btn = Button(self.edit_post, text = 'Remove category', width = 15, height = 2, bd = 2, command = self.remove_category).place(x = 520, y = 400)
 
 #       Lista que mostra as categorias escolhidas pelo utilizador
         self.categories_chosen = Listbox(self.edit_post, width = 15, height = 6, font = ('Roboto', 14))
@@ -286,32 +292,78 @@ class Edit():
     
         self.edit_post.attributes('-topmost', 'true') # Para a janela voltar a ser toplevel
 
-    # def save_changes(self, path, who_posted):
-    #     new_name = self.name_edit.get()
-    #     new_description = self.description_edit.get('1.0','end-1c')
-    #     new_categories_chosen = self.categories_chosen.get('0', END)
-    #     new_filename = self.filename
-    #     os.chdir(path)
-    #     for file in os.listdir(os.getcwd()):
-    #         if file.find('.txt') != -1:
-    #             if not file == 'comments.txt':
-    #                 f = open(file, 'r',encoding = 'utf-8')
-    #                 content = [line.strip('\n') for line in f.readlines()]
-    #                 user = content[0]
-    #                 date = content[2]
-    #                 f.close()
-    #                 # os.remove(file)
-    #                 new_file = new_name + '.txt'
-    #                 f = open(new_file, 'x', encoding = 'utf-8')
-    #                 f.write('{0}\n{1}\n{2}\n{3}'.format(who_posted, new_name, date, new_description))
-    #                 for category in new_categories_chosen:
-    #                     f.write('\n'+str(category))
-    #                 f.close()
-    #                 os.chdir('..\\')
-    #                 os.mkdir(new_name)
+    
+    def add_category(self, categories_chosen):
+        """
+        Esta função faz com que o utilizador escolha categorias para o seu post 
+        """
+        chosen_category = self.categories.get() # Vai buscar o que foi selecionado nas categorias disponíveis
+        categories_chosen = self.categories_chosen.get(0,'end') # Vai buscar a lista de categorias selecionadas pelo utilizador
+        if self.categories_chosen.size() == 0:
+            # Se a lista de categorias escolhidas pelo utilizador estiver vazia:
+            self.categories_chosen.insert(END, chosen_category) # Insere a categoria escolhida
+        else:
+            for category in categories_chosen:
+                # Loop for pelas categorias que foram escolhidas pelo utilizador
+                if category == chosen_category: # Se a categoria selecionada já estiver na lista de categorias escolhidas pelo utilizador
+                    messagebox.showinfo('Already chosen','You already chose the category you selected!') # Mostra mensagem
+            else: 
+                self.categories_chosen.insert(END, chosen_category)
+           
 
-                    
-                    
-            # else:
-            #     pass
-                # os.remove(file)
+    def remove_category(self):
+        """
+        Esta função faz com que ao clique do botão "Remove Category" \n
+        Com que apague a categoria selecionada na Listbox
+        """
+        selected = self.categories_chosen.curselection()
+        if not selected:
+            messagebox.showerror('Error','Select a category first to delete it!')
+        else:
+            self.categories_chosen.delete(selected)
+
+
+    def save_changes(self, path, who_posted):
+        new_name = self.name_edit.get()
+        new_description = self.description_edit.get('1.0','end-1c')
+        new_categories_chosen = self.categories_chosen.get('0', END)
+        os.chdir(path)
+        if self.filename == '':
+            for file in os.listdir(os.getcwd()):
+                if file.find('.txt') != -1:
+                    if not file == 'comments.txt':
+                        f = open(file, 'r',encoding = 'utf-8')
+                        content = [line.strip('\n') for line in f.readlines()]
+                        user = content[0]
+                        date = content[2]
+                        f.close()
+                        os.remove(file)
+                        new_file = new_name + '.txt'
+                        f = open(new_file, 'x', encoding = 'utf-8')
+                        f.write('{0}\n{1}\n{2}\n{3}'.format(who_posted, new_name, date, new_description))
+                        for category in new_categories_chosen:
+                            f.write('\n'+str(category))
+                        f.close()
+        else:
+            for file in os.listdir(os.getcwd()):
+                if file.find('.txt') != -1:
+                    if not file == 'comments.txt':
+                        f = open(file,'r',encoding = 'utf-8')
+                        content = [line.strip('\n') for line in f.readlines()]
+                        user = content[0]
+                        date = content[2]
+                        f.close()
+                        os.remove(file)
+                        new_file = new_name + '.txt'
+                        f = open(new_file, 'x', encoding = 'utf-8')
+                        f.write('{0}\n{1}\n{2}\n{3};'.format(who_posted, new_name, date, new_description))
+                        for category in new_categories_chosen:
+                            f.write('\n'+str(category))
+                        f.close()
+                        messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
+                else:
+                    os.remove(file)
+                    shutil.copy2(self.filename, os.getcwd())
+                    messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
+        for i in range(4):
+            os.chdir('..')  # Voltar quatro pastas atras
