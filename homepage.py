@@ -121,6 +121,17 @@ class Main_App:
 #           Barra de pesquisa
 #           search = Entry(nav_bar, bg = '#E0E0E0', bd = 0, font =('Roboto', 14), width = 15).place(x = 220, y = 15)
 
+        def dashboard_tl(self, homepage):
+                    '''
+                    Função para criar um Top Level para aparecer a gerência da app aos admins
+                    '''        
+                    self.tl_dashboard = Toplevel(homepage)
+                    self.tl_dashboard.geometry('800x500+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
+                    self.tl_dashboard.title('Dashboard')
+                    self.tl_dashboard.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
+                    self.tl_dashboard.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
+                    dashboard(self.tl_dashboard, self.username)
+
         def admin_tl(self, homepage):
                     '''
                     Função para criar um Top Level para aparecer a gerência da app aos admins
