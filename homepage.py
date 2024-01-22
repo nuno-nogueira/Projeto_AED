@@ -245,7 +245,7 @@ class Main_App:
             select_button.place(x=95, y=200)
             #Button para Pesquisar
             self.btn_search= Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue', 
-                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
+                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.func_selected_date))
             self.btn_search.place(x=20,y=240) 
 
 #           --- Frame para Button 'My Albums' -----------------
@@ -276,48 +276,24 @@ class Main_App:
 
 #       ------------------------------- FUNÇÕES HOMEPAGE ----------------------------
 
-        def func_following(self):
+        def func_selected_date(self):
                     '''
-                    Ao clicar no Button 'Following' abre uma Frame para ver
-                    os meus Albums favoritos
+                    Ao clicar no Button 'Select Date' pegamos na data selecionada no widget 
                     '''
-                    
                     self.selected_date = self.cal.get_date() #pegar na data selecionada
-                    print('selected date:', self.selected_date)
 
-#       ----------- ----------------------------
 
-        def func_selected_date(self, tl, username):
-            '''
-            Ao clicar no Button 'Following' abre uma Frame para ver
-            os meus Albums favoritos
-            '''
-            #Frame 
-            self.f_my_albums= Frame(tl, width=800, height=540, bg='lightblue')
-            self.f_my_albums.place(x=200,y=60)
-            btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
-            btn_destroy_frame.place(x=0,y=0)
+        # def func_selected_date(self, tl, username):
+        #     '''
+        #     Ao clicar no Button 'Following' abre uma Frame para ver
+        #     os meus Albums favoritos
+        #     '''
+        #     #Frame 
+        #     self.f_my_albums= Frame(tl, width=800, height=540, bg='lightblue')
+        #     self.f_my_albums.place(x=200,y=60)
+        #     btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
+        #     btn_destroy_frame.place(x=0,y=0)
             
-#           --- Fazer os Álbums aparecer:
-            
-            
-            # Meter numa variável a diretoria/pasta dos álbums do user
-            self.albums_directory=('./users_photoalbums/'+ username) 
-            # Listar os álbums
-            album_folders = []
-            for i in os.listdir(self.albums_directory): #Por cada folder
-                full_path = os.path.join(self.albums_directory, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
-                if os.path.isdir(full_path): #se for uma folder
-                    album_folders.append(i) #Adiciona o nome desse album á lista
-            
-            for idx, album_folder in enumerate(album_folders):
-                # Calculate row and column based on the index
-                row = idx // 4
-                col = idx % 4
-
-                btn_my_album = Button(self.f_my_albums, text=album_folder, bg='#f8d775', width=18, height=5,
-                                    command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
-                btn_my_album.grid(row=row, column=col, padx=30, pady=30)
 
 #       ----------- + POST Button ---------------------------------------------------
         
