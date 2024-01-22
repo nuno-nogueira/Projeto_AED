@@ -245,7 +245,7 @@ class Main_App:
             select_button.place(x=95, y=200)
             #Button para Pesquisar
             self.btn_search= Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue', 
-                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.func_selected_date))
+                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
             self.btn_search.place(x=20,y=240) 
 
 #           --- Frame para Button 'My Albums' -----------------
@@ -279,6 +279,7 @@ class Main_App:
         def func_selected_date(self):
                     '''
                     Ao clicar no Button 'Select Date' pegamos na data selecionada no widget 
+                    para poder pesquisar os posts que foram publicados nessa data 
                     '''
                     self.selected_date = self.cal.get_date() #pegar na data selecionada
 

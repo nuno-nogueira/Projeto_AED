@@ -23,11 +23,6 @@ def func_search_results_window(tl, search_entry, lbox_categ, selected_date):
     tree.heading("Date", text = "Date")
     tree.place(x=20, y=90)
 
-    #Button 'Clear history'
-    btn_clear_tree= Button(f_results, text='Clear history',
-                           command=lambda: clear_tree(tree))
-    btn_clear_tree.place(x=30,y=500)
-
     #Buscar o ficheiro 'all-posts'
     file_all_posts=open('./files/all-posts.txt', 'r')
     read_file_all_posts=file_all_posts.readlines()
@@ -35,7 +30,8 @@ def func_search_results_window(tl, search_entry, lbox_categ, selected_date):
     search_value = search_entry.get() #para buscar o valor de search_entry que já está definida como uma String no ficheiro Homepage.py
     
     # ---- Pesquisa -----------
-    
+    tree.delete()
+
     #Search Entry bar:
     #(Username OU Categoria de fotos)
     for line in read_file_all_posts: #Por cada post
@@ -57,19 +53,22 @@ def func_search_results_window(tl, search_entry, lbox_categ, selected_date):
         if category in str(selected_items):
             tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2]))
     
-
-    #Search Date
+   
+    #Search Date 
+    print(selected_date)  
+    selected_date_str = str(selected_date)
     for line in read_file_all_posts:
         date = str(line.split(";")[2])  #coverter para string para poder comparar
         print(date)
-        print('seeeee', selected_date)
-        if date == str(selected_date):  #coverter para string para poder comparar
+        if date == selected_date_str: 
+            print(selected_date_str)
             tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2]))
     
-    tree.delete()
-    
 
-
+    #Button 'Clear history'
+    btn_clear_tree= Button(f_results, text='Clear history',
+                           command=lambda: clear_tree(tree))
+    btn_clear_tree.place(x=30,y=500)
     #Abrir um Post na Treeview através do Button ''See Post''
     btn_select_searched_post= Button(f_results, text='See Post', font=('Roboto, 14'))
     btn_select_searched_post.place(x=100,y=500)
@@ -84,7 +83,7 @@ def clear_tree(tree):
         '''
         Button 'Clear Search history' retira o conteúdo da tree
         '''
-        tree.delete('')
+        tree.delete(*tree.get_children())
         
 
 
