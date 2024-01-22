@@ -29,15 +29,22 @@ class admins():
         f_users = open('files\\users.txt', 'r', encoding='utf-8')
         lines = f_users.readlines()
         f_users.close()        
-        for i in lines:
-            self.lbox_users.insert(END, i) #END significa que cada 'i' é inserido no fim do conteúdo da listbox
+        for line in lines:
+            user_name=line.split(';')
+            self.lbox_users.insert(END, user_name[1]) #END significa que cada 'i' é inserido no fim do conteúdo da listbox
 
+        lbl_remove_user= Label(tl_admin, text='Select the user first', font=('Roboto, 12'), fg='#fff', bg='#333')
+        lbl_remove_user.place(x= 50, y=380)
         #Button para remover user
-        self.btn_remove_user = Button(self.tl_admin, relief='raised', text='Remove', bg= '#fff', fg='#333', border = '0', padx=5, pady=5, font=('Roboto', 14), command=self.func_remove_account)
-        self.btn_remove_user.place(x = 50, y = 380)
+        self.btn_remove_user = Button(self.tl_admin, relief='raised', text='Remove', bg= '#fff', fg='#333', border = '0', padx=5, pady=5, font=('Roboto', 14), 
+                                      command=self.func_remove_account)
+        self.btn_remove_user.place(x = 170, y = 380)
         #Button para guardar remoção
-        self.btn_save = Button(self.tl_admin, relief='raised', text='Save', bg= 'green', fg='#fff', border = '0', padx=5, pady=5, font=('Roboto', 14), command=self.func_save_account_deletion)
-        self.btn_save.place(x = 210, y = 380)
+        self.btn_save = Button(self.tl_admin, relief='raised', width=15, text='Save changes', bg= 'green', fg='#fff', border = '0', padx=5, pady=5, font=('Roboto', 14), 
+                               command=self.func_save_account_deletion)
+        self.btn_save.place(x = 50, y = 400)
+        
+        
 
         # --- 2ª Ação: Adicionar ou Remover uma categoria de fotos: --------------------------------------------------------------
         
@@ -81,14 +88,13 @@ class admins():
     
     # --- FUNÇÕES ---------------------
     def func_remove_account(self):
-
-        f = open  (Path('')/'Projeto_AED'/'files'/'users.txt', 'r')
-        lines = f.readlines()        
-        self.lbox_users= Listbox(self.tl_admin, height=10, selectmode='single', font=('Roboto', 14))
-        for line in lines:
-            self.lbox_users.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
-            self.lbox_users.place(x = 30, y = 240)
-
+        '''
+        Remove a linha selecionada da Listbox dos users
+        '''
+        selected_user = self.lbox_users.curselection()
+        if selected_user:
+            user = selected_user[0]
+            self.lbox_users.delete(user)
    
     def func_save_account_deletion(self):
         """

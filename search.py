@@ -24,7 +24,7 @@ def func_search_results_window(tl, search_entry, lbox_categ, selected_date):
     tree.place(x=20, y=90)
 
     # Buscar o ficheiro 'all-posts'
-    file_all_posts=open('./files/all-posts.txt')
+    file_all_posts=open('./files/all-posts.txt', 'r')
     read_file_all_posts=file_all_posts.readlines()
     file_all_posts.close()
     search_value = search_entry.get() #para buscar o valor de search_entry que já está definida como uma String no ficheiro Homepage.py
