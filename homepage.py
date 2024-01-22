@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk, ImageFilter
-
+from albums_comments import Albums_Comments
 from admins import admins
 from posts import Posts
 from dashboard import dashboard
@@ -50,7 +50,7 @@ class Main_App:
 
 #           Frame onde aparece os botões de 'See Profile' e 'Log Out'
 #           Aparecem quando o utilizador clica no botão com o icone do perfil
-            self.profile_click_frame = Frame(self.homepage, width = 200, height = 135, bg = 'white')
+            self.profile_click_frame = Frame(self.homepage, width = 200, height = 85, bg = 'white')
 
 #           Frame onde aparece a notificação mais recente e um botão que vai dar á página com todas as notificações
 #           Aparecem quando o utilizador clica no botão com o icone da notificação
@@ -154,6 +154,7 @@ class Main_App:
                 self.btn_tl_admin.place_forget()
             else: # Senão
                 self.profile_click_frame.place(x = 870, y = 0)
+                self.profile_click_frame.lift() # Para a frame aparecer por cima de todos os outros widgets
                 self.log_out.place(x = 0, y = 0)
                 if admin == True:
                     self.btn_tl_admin.place(x = 0, y = 45)
@@ -205,7 +206,6 @@ class Main_App:
             # Adicionar a Imagem ao Canvas
             canvas.create_image(400, 270, anchor=CENTER, image=self.bg_img)
 
-
 #           --- Frame de Pesquisa ---
             self.f_search= Frame(self.tl, width=200, height=300)
             self.f_search.place(x=0,y=60)
@@ -225,44 +225,92 @@ class Main_App:
             for line in lines_categ:
                 self.lbox_categ.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
             # Widget Pick a Date
-            self.cal = DateEntry(self.f_search, width=12, background='purple', foreground='white', borderwidth=2)
-            self.cal.place(x=20, y=200)
+            self.cal = DateEntry(self.f_search, width=8, background='purple', foreground='white', borderwidth=2)
+            self.cal.place(x=20, y=205)
             # Button para selecionar uma data
-            select_button = Button(self.f_search, text="Select Date", command=self.func_selected_date)
-            select_button.place(x=20, y=220)
+            select_button = Button(self.f_search, text="Select this Date", bg='#fff', command=self.func_selected_date)
+            select_button.place(x=95, y=200)
             #Button para Pesquisar
-            self.btn_search= Button(self.f_search, height=2, text='Search for results', bg='lightblue', 
+            self.btn_search= Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue', 
                                     command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
             self.btn_search.place(x=20,y=240) 
 
-#           Frame para Button 'My Albums'
-            self.f_btn_my_posts= Frame(self.tl, width=200, height=100, bg='lightblue')
-            self.f_btn_my_posts.place(x=0,y=360)
-            self.lbl_btn= Button(self.f_btn_my_posts, text='My Albums', width=12, font=('Roboto, 16'),
+#           --- Frame para Button 'My Albums' -----------------
+            self.frame_myalbums= Frame(self.tl, width=200, height=60, bg='pink')
+            self.frame_myalbums.place(x=0,y=350)
+            self.btn_myalbums= Button(self.frame_myalbums, text='My Albums', width=12, font=('Roboto, 16'),
                                  command=lambda:self.my_albums(self.tl, self.username))
-            self.lbl_btn.place(x=20,y=20)
+            self.btn_myalbums.place(x=20,y=15)
 
-#           Botão para adicionar um post
-            self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 0, y = 450)
+#           --- Frame para Button 'Following' -----------------
+            self.frame_following= Frame(self.tl, width=200, height=60, bg='lightblue')
+            self.frame_following.place(x=0,y=410)
+            self.lbl_following= Button(self.frame_following, text='Following', width=12, font=('Roboto, 16'),
+                                 command=lambda:self.my_albums(self.tl, self.username))
+            self.lbl_following.place(x=20,y=15)
+
+#           --- Button '+ Add' -----------------------------------
+            self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 0, y = 600)
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
-#           Aparece os botões de Fazer um Post e Criar um Album
+#           Aparecem os botões de fazer um Post e criar um Album
             self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
-            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.add_post_frame(self.homepage, self.username, window))
-            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, command = lambda: self.create_album_frame(self.homepage, self.username, window))
+            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, 
+                                   command = lambda: self.add_post_frame(self.homepage, self.username, window))
+            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, 
+                                    command = lambda: self.create_album_frame(self.homepage, self.username, window))
 
-#       -------- FUNÇÕES ------------------------------------------------------------
 
-        def func_selected_date(self):
+
+#       ------------------------------- FUNÇÕES HOMEPAGE ----------------------------
+
+        def func_following(self):
                     '''
-                    Ao carregar 
+                    Ao clicar no Button 'Following' abre uma Frame para ver
+                    os meus Albums favoritos
                     '''
                     
                     self.selected_date = self.cal.get_date() #pegar na data selecionada
                     print('selected date:', self.selected_date)
+
+#       ----------- ----------------------------
+
+        def func_selected_date(self, tl, username):
+            '''
+            Ao clicar no Button 'Following' abre uma Frame para ver
+            os meus Albums favoritos
+            '''
+            #Frame 
+            self.f_my_albums= Frame(tl, width=800, height=540, bg='lightblue')
+            self.f_my_albums.place(x=200,y=60)
+            btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
+            btn_destroy_frame.place(x=0,y=0)
+            
+#           --- Fazer os Álbums aparecer:
+            
+            
+            # Meter numa variável a diretoria/pasta dos álbums do user
+            self.albums_directory=('./users_photoalbums/'+ username) 
+            # Listar os álbums
+            album_folders = []
+            for i in os.listdir(self.albums_directory): #Por cada folder
+                full_path = os.path.join(self.albums_directory, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
+                if os.path.isdir(full_path): #se for uma folder
+                    album_folders.append(i) #Adiciona o nome desse album á lista
+            
+            for idx, album_folder in enumerate(album_folders):
+                # Calculate row and column based on the index
+                row = idx // 4
+                col = idx % 4
+
+                btn_my_album = Button(self.f_my_albums, text=album_folder, bg='#f8d775', width=18, height=5,
+                                    command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
+                btn_my_album.grid(row=row, column=col, padx=30, pady=30)
+
 #       ----------- + POST Button ---------------------------------------------------
+        
         def show_add_content_frame(self):
             """
-            Esta função faz com que o Frame para adicionar um post apareça \n
+            Esta função faz com que o Frame para adicionar um post apareça
             Dentro da Frame, aparece as opções de criar um post com uma imagem, ou criar um álbum novo
             """
             if self.add_content_frame.winfo_ismapped(): #Se o frame estiver na janela
@@ -270,7 +318,7 @@ class Main_App:
                 self.add_post.place_forget()
                 self.add_album.place_forget()
             else:
-                self.add_content_frame.place(x = 800, y = 200)
+                self.add_content_frame.place(x = 0, y = 400)
                 self.add_post.place(x = 0, y = 0)
                 self.add_album.place(x = 0, y = 60)
 
@@ -305,10 +353,9 @@ class Main_App:
             self.f_my_albums= Frame(tl, width=800, height=540, bg='#fff')
             self.f_my_albums.place(x=200,y=60)
             btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
-            btn_destroy_frame.place(x=600,y=10)
+            btn_destroy_frame.place(x=0,y=0)
             
 #           --- Fazer os Álbums aparecer:
-            
             #Meter numa variável a diretoria/pasta dos álbums do user
             self.albums_directory=('./users_photoalbums/'+ username) 
             
@@ -330,19 +377,22 @@ class Main_App:
 
         def open_my_album_frame(self, tl, album_folder, username):
             '''
-            Cada Álbum abre uma nova Frame com Publicações
+            Cada Álbum abre uma nova Frame com Publicações e Comentários do Álbum
             '''
-            # Frame
+            self.album_folder=album_folder#para poder usar no file albums_comments
+            # Frame com Publicações
             self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
             self.f_my_album.place(x=200,y=60)
-            # Button Sair Frame
-            btn_destroy_frame2= Button(self.f_my_album, text=' X ', command=self.f_my_album.destroy)
-            btn_destroy_frame2.place(x=600,y=10)
+            # Frame com Comentários
+            self.f_my_album_comments= Frame(tl, width=200, height=540, bg='blue')
+            self.f_my_album_comments.place(x=800,y=60)
+            Albums_Comments(self.f_my_album_comments, self.album_folder, self.username)
+
 
 #           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
             
             # Criar um path até ao Álbum clicado
-            album_path = os.path.join('.\\users_photoalbums\\', username, album_folder) #não é necessário concatenação, nem \\
+            album_path = os.path.join('.\\users_photoalbums\\', username, self.album_folder) #não é necessário concatenação, nem \\
             
             # Listar os Posts do meu Álbum
             my_album_post = []

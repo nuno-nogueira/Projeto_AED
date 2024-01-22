@@ -274,6 +274,7 @@ class Create_Album():
         os.mkdir(Path(album_dir))
         messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.') 
         self.created_album=1
+        file_comments= open()
     return
 
   def go_back(self):
