@@ -66,30 +66,31 @@ class Main_App:
 #               Uma welcome message só para os users
                 self.username_label = Label(self.nav_bar, text = 'Welcome ' + self.username + '!', font = ('Roboto', 16), bg = '#333', fg='white').place(x = 10, y = 18)
 
-
-#             Icone da homepage (FONTE - SITE FLATICON)
-#             icon = Image.open('./images/icons/homepage_icon.png').resize((50,50))
-#             icon = ImageTk.PhotoImage(icon)
-#             self.homepage_icon = Button(self.nav_bar, image = icon, bg = '#333333', bd = 0)
-#             self.homepage_icon.image = icon
-#             self.homepage_icon.place(x = 10, y = 5)
+# ---------- Icons NavBar ---------------------------------------------------------
+            
+#           Icone da homepage (FONTE - SITE FLATICON)
+            icon = Image.open('./images/icons/homepage_icon.png').resize((40,40))
+            icon = ImageTk.PhotoImage(icon)
+            self.homepage_icon = Button(self.nav_bar, image = icon, bg = '#333333', bd = 0,
+                                        command= self.home_btn)
+            self.homepage_icon.image = icon
+            self.homepage_icon.place(x = 380, y = 7)
 
 #           Icone do perfil (FONTE - SITE FLATICON)
-            icon2 = Image.open(Path('../Projeto_AED/images/icons/profile_icon.png')).resize((50,50))
+            icon2 = Image.open(Path('../Projeto_AED/images/icons/profile_icon.png')).resize((40,40))
             icon2 = ImageTk.PhotoImage(icon2)
             self.profile_icon = Button(self.nav_bar, image = icon2, bd = 0, bg = '#333333', command = lambda:self.profile_click(admin))
             self.profile_icon.image = icon2
-            self.profile_icon.place( x = 940, y = 5)
+            self.profile_icon.place( x = 940, y = 8)
  
-
-#           ------- Janela com várias estatísticas do utilizador ----------
-#           Icon de notificações(FONTE - SITE FLATICON)
-            icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((40,40))
+#           Icon de notificações (FONTE - SITE FLATICON)
+            icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((35,35))
             icon3 = ImageTk.PhotoImage(icon3)
             self.dashboard_icon = Button(self.nav_bar, image = icon3, bd = 0, bg = '#333333', 
                                          command = lambda: self.dashboard_tl(self.homepage))
             self.dashboard_icon.image = icon3
             self.dashboard_icon.place(x = 800, y = 8)
+
 #           Icon da dashboard (FONTE - SITE FLATICON)
             icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((40,40))
             icon4 = ImageTk.PhotoImage(icon4)
@@ -97,6 +98,9 @@ class Main_App:
                                     command= self.notifications_click)
             self.bell_icon.image = icon4
             self.bell_icon.place(x = 870, y = 8)
+
+
+
 
 #           Botão em que faz com que o utilizador saia da conta com que está conectado e volte à página principal
             self.log_out = Button(self.profile_click_frame, text = 'Log Out', font = ('Roboto', 16), bg = 'lightgrey', bd = '3', relief = 'raised', width = 10, command = self.logging_out)
@@ -120,6 +124,15 @@ class Main_App:
 
 #           Barra de pesquisa
 #           search = Entry(nav_bar, bg = '#E0E0E0', bd = 0, font =('Roboto', 14), width = 15).place(x = 220, y = 15)
+        
+        def home_btn(self, homepage_canvas):
+            '''
+            Fecha as frames que estiverem abertas para voltar ao início da App
+            '''
+            self.homepage_canvas= homepage_canvas
+            self.homepage_canvas.canvas.place(x=0,y=0)
+            
+
 
         def dashboard_tl(self, homepage):
                     '''
@@ -195,16 +208,16 @@ class Main_App:
 
 #           --- Imagem background ---------
             # Canvas
-            canvas = Canvas(self.homepage, width=800, height=540)
-            canvas.place(x=200,y=0)
+            self.canvas = Canvas(self.homepage, width=800, height=540)
+            self.canvas.place(x=200,y=0)
             # Buscar Imagem
             bg_image = Image.open(Path("./images/backgrounds/main_background.jpg"))
             # Redimensionar Imagem
             resized_bg_image = bg_image.resize((800, 540))  #Ajustar tamanho da Imagem (width, height)
             # PhotoImage
             self.bg_img = ImageTk.PhotoImage(resized_bg_image)
-            # Adicionar a Imagem ao Canvas
-            canvas.create_image(400, 270, anchor=CENTER, image=self.bg_img)
+            # Adicionar a Imagem ao self.Canvas
+            self.canvas.create_image(400, 270, anchor=CENTER, image=self.bg_img)
 
 #           --- Frame de Pesquisa ---
             self.f_search= Frame(self.tl, width=200, height=300)
