@@ -241,12 +241,14 @@ class Main_App:
             self.cal = DateEntry(self.f_search, width=8, background='purple', foreground='white', borderwidth=2)
             self.cal.place(x=20, y=205)
             # Button para selecionar uma data
-            select_button = Button(self.f_search, text="Select this Date", bg='#fff', command=self.func_selected_date)
+            self.selected_date = self.cal.get_date()
+            select_button = Button(self.f_search, text="Select this Date", bg='#fff', command=self.selected_date)
             select_button.place(x=95, y=200)
-            #Button para Pesquisar
-            self.btn_search= Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue', 
-                                    command=lambda:func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
-            self.btn_search.place(x=20,y=240) 
+            # Button para pesquisar
+            self.btn_search = Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue',
+                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
+            self.btn_search.place(x=20, y=240)
+            
 
 #           --- Frame para Button 'My Albums' -----------------
             self.frame_myalbums= Frame(self.tl, width=200, height=60, bg='pink')
@@ -276,13 +278,8 @@ class Main_App:
 
 #       ------------------------------- FUNÇÕES HOMEPAGE ----------------------------
 
-        def func_selected_date(self):
-                    '''
-                    Ao clicar no Button 'Select Date' pegamos na data selecionada no widget 
-                    para poder pesquisar os posts que foram publicados nessa data 
-                    '''
-                    self.selected_date = self.cal.get_date() #pegar na data selecionada
-
+        
+        
 
         # def func_selected_date(self, tl, username):
         #     '''
