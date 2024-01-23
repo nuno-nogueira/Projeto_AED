@@ -247,6 +247,8 @@ class Main_App:
             for line in lines_categ:
                 self.lbox_categ.insert(END, line) #END significa que cada line é inserida no fim do conteúdo da listbox
             # Widget Pick a Date
+            self.selected_date = ''
+
             self.cal = DateEntry(self.f_search, width=8, background='purple', foreground='white', borderwidth=2)
             self.cal.place(x=20, y=205)
             # Button para selecionar uma data
@@ -288,9 +290,9 @@ class Main_App:
 
         def get_selected_date(self):
             '''
+            Para atualizar o valor escolhido pelo utilizador na DateEntry 'self.cal'
             '''
             self.selected_date = self.cal.get_date()
-            print(self.selected_date)
                 
 
 #       ----------- + POST Button ---------------------------------------------------

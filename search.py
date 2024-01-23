@@ -10,7 +10,6 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
     '''
     Abre uma Frame para mostrar resultados de pesquisa
     '''
-    print(get_selected_date)
     #Frame para mostrar resultados
     f_results= Frame(tl, width=600, height=700)
     f_results.place(x=200,y=60)
@@ -57,13 +56,12 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
             tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
     
     #Search Date 
-    print(get_selected_date)  
-    selected_date_str = str(get_selected_date)
-    for line in read_file_all_posts:
-        date = str(line.split(";")[2])  #coverter para string para poder comparar
-        if date == selected_date_str: 
-            print(selected_date_str)
-            tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
+    if not get_selected_date == '':  
+        get_selected_date = str(get_selected_date)
+        for line in read_file_all_posts:
+            date = str(line.split(";")[2])  #coverter para string para poder comparar
+            if date == get_selected_date: 
+                tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
     
     #Button 'Clear history'
     btn_clear_tree= Button(f_results, text='Clear history',
