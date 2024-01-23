@@ -18,6 +18,8 @@ class Posts():
         Cada Post abre um TopLevel()
         '''
         self.username = username
+
+        # Criação do TopLevel para a janela de Posts
         self.tl_my_post= Toplevel(f_my_album)
         self.tl_my_post.geometry('1000x600+100-100') 
         self.tl_my_post.title('MyPhotos')
@@ -39,7 +41,7 @@ class Posts():
         path = os.path.dirname(image_path)
         files = []
         for  i in os.listdir(path): 
-#       Para encontrar o ficheiro .txt!!
+#           Para encontrar o ficheiro comments.txt
             if i.find('.txt') != -1:
                 if i == 'comments.txt':
                     comments_file = os.path.join(path, i)
@@ -50,6 +52,7 @@ class Posts():
         f = open(post_name_path, 'r')
         content = [line.strip('\n') for line in f.readlines()] # Para remover line breaks de cada item na lista
         f.close()
+
         who_posted = content[0] 
         post_name = content[1] 
         post_date = content[2] 
@@ -57,10 +60,11 @@ class Posts():
         category_chosen = content[4]
         likes = int(content[5]) 
         if len(content) == 5:
-            likes_list = [] # Lista de utilizador que deram gosto
+            likes_list = [] # Lista de utilizadores que deram gosto
         else:
             likes_list = content[6:] # Se a variavel 'content' apenas tiver 5 linhas, significa que nenhum user deu like no post
                             # Pois todas as linhas depois do nº de gostos (content[5]) é destinado aos users que dao like
+
         self.likes = Label(self.tl_my_post, text = likes, fg = '#E04F5F', bg = 'lightgrey', font = ('Roboto', 14))
         self.likes.place(x = 445, y = 370)
 
@@ -80,12 +84,12 @@ class Posts():
         self.post_name = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = 'lightgrey')
         self.post_name.place(x = 20, y = 410)
             
-        category_display = category_chosen.title() # Capitalizar a primeira letra
+        category_display = category_chosen.title() # Capitalizar a primeira letra // razões visuais
         self.category = Label(self.tl_my_post, text = category_display, font = ('Roboto', 16), bg = '#F0F0F0', fg = 'black')
-        self.category.place(x = 230, y = 435)
+        self.category.place(x = 230, y = 410)
 
-        self.post_date_ = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
-        self.post_date_.place( x = 20, y = 450)
+        self.post_date = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
+        self.post_date.place( x = 20, y = 450)
 
         self.post_description = Text(self.tl_my_post, font = ('Roboto', 10), width = 40, height = 5, bd = 0, bg = 'lightgrey')
         self.post_description.place( x = 20, y = 470)
@@ -340,11 +344,28 @@ class Edit():
 
 
     def save_changes(self, path, who_posted):
+        # Se alguma coisa faltar // o utilizador não tiver preenchido
+        if self.filename == '':
+            messagebox.showerror('Error','You have to choose a picture to make a post!', parent = self.tl_my_post)
+            return
+        if self.add_to_album.get() == '':
+            messagebox.showerror('Error','You have to select an album to save this post!', parent = self.tl_my_post)
+            return
+        if self.photo_name.get() == '':
+            messagebox.showerror('Error', 'You have to select a name for your post!', parent = self.tl_my_post)
+            return
+        if self.description.get('1.0','end-1c') == '':
+            messagebox.showerror('Error','You have to insert a description for your post!', parent = self.tl_my_post)
+            return
+        if self.categories.get() == '':
+            messagebox.showerror('Error','You have to select a category for your post!', parent = self.tl_my_post)
+            return
         new_name = self.name_edit.get()
         new_description = self.description_edit.get('1.0','end-1c')
         if new_description.find('\n') != -1:
             new_description = self.description_edit.replace('\n',' ')
         new_category_chosen = self.categories.get()
+        print(new_category_chosen)
         os.chdir(path)
         if self.filename == '':
             for file in os.listdir(os.getcwd()):
@@ -358,8 +379,11 @@ class Edit():
                         os.remove(file)
                         new_file = new_name + '.txt'
                         f = open(new_file, 'x', encoding = 'utf-8')
-                        f.write('{0}\n{1}\n{2}\n{3}\n'.format(who_posted, new_name, date, new_description, new_category_chosen))
+                        f.write('{0}\n{1}\n{2}\n{3}\n{4}\n0'.format(who_posted, new_name, date, new_description, new_category_chosen))
                         f.close()
+                        messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)', parent = self.edit_post)
+                        self.edit_post.destroy()
+
         else:
             for file in os.listdir(os.getcwd()):
                 if file.find('.txt') != -1:
@@ -372,13 +396,13 @@ class Edit():
                         os.remove(file)
                         new_file = new_name + '.txt'
                         f = open(new_file, 'x', encoding = 'utf-8')
-                        f.write('{0}\n{1}\n{2}\n{3}\n{4}'.format(who_posted, new_name, date, new_description, new_category_chosen))
+                        f.write('{0}\n{1}\n{2}\n{3}\n{4}\n0'.format(who_posted, new_name, date, new_description, new_category_chosen))
                         f.close()
-                        messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
+                        messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)', parent = self.edit_post)
+                        self.edit_post.destroy()
                 else:
                     os.remove(file)
                     shutil.copy2(self.filename, os.getcwd())
-                    messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
         for i in range(4):
             os.chdir('..')  # Voltar quatro pastas atras
     
