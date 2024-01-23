@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from homepage import *
 from datetime import datetime
+from PIL import Image, ImageTk
 import os
 from posts import Posts
 from albums_comments import Albums_Comments
@@ -40,8 +41,8 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
     for line in read_file_all_posts: #Por cada post
         if search_value== '': #Se a barra de pesquisa estiver vazia
             continue
-        if (line.split(";")[0] == search_value) or (line.split(";")[1] == search_value): #Se o que estiver na barra for igual à posição 0 da linha
-            tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
+        if (line.split("/")[0] == search_value) or (line.split("/")[1] == search_value): #Se o que estiver na barra for igual à posição 0 da linha
+            tree.insert("", "end", values=(line.split("/")[0], line.split("/")[1], line.split("/")[2])) 
 
     #Search Listbox:
     selected_listbox_values = lbox_categ.curselection()
@@ -51,26 +52,27 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
         selected_items.append(item.strip())
         
     for line in read_file_all_posts:  
-        category = str(line.split(";")[1])
+        category = str(line.split("/")[1])
         if category in str(selected_items):
-            tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
+            tree.insert("", "end", values=(line.split("/")[0], line.split("/")[1], line.split("/")[2])) 
     
     #Search Date 
     if not get_selected_date == '':  
         get_selected_date = str(get_selected_date)
         for line in read_file_all_posts:
-            date = str(line.split(";")[2])  #coverter para string para poder comparar
+            date = str(line.split("/")[2])  #coverter para string para poder comparar
             if date == get_selected_date: 
-                tree.insert("", "end", values=(line.split(";")[0], line.split(";")[1], line.split(";")[2])) 
+                tree.insert("", "end", values=(line.split("/")[0], line.split("/")[1], line.split("/")[2])) 
     
     #Button 'Clear history'
     btn_clear_tree= Button(f_results, text='Clear history',
                            command=lambda: clear_tree(tree))
     btn_clear_tree.place(x=30,y=500)
+
     
     #Abrir um Post na Treeview através do Button ''See Post''
     btn_select_searched_post= Button(f_results, text='See Post', font=('Roboto, 14'),
-                                command=lambda:open_tree_post(tree, TclVersion))
+                                command=lambda:open_tree_post(tree, f_results, get_selected_date))
     btn_select_searched_post.place(x=100,y=500)
    
 
@@ -80,31 +82,62 @@ def clear_tree(tree):
         '''
         tree.delete(*tree.get_children())
 
-def open_tree_post(tree, tl):
+def open_tree_post(tree, f_results, get_selected_date):
         '''
         
         '''
-        selected_item = tree.selection()
-
+        
+        selected_item = tree.selection()[0]
+        print(selected_item)
+        
         if selected_item:
-            user, album, post_name, category, date = tree.item(selected_item, "values")
+            user, category, date_str = tree.item(selected_item, "values")
+   
+            user_folder_path = os.path.join('users_photoalbums', user)
             
-            users_path = os.path.join('users_photoalbums', user)
+            #iterar dentro das folders até chegar ao post
+            for album_folder in os.listdir(user_folder_path):
+                album_folder_full_path = os.path.join(user_folder_path, album_folder) #album path
             
-            if os.path.exists(users_path): # Check if the user folder exists
-                album_path = os.path.join(users_path, album)
+                if os.path.isdir(album_folder_full_path):
                 
-                if os.path.exists(album_path): # Check if the album folder exists
-                    post_path = os.path.join(album_path, post_name)
-                
-                    if os.path.exists(post_path): # Check if the post folder exists
-                        print(f"{post_name} is in album.")
-                
-                        tl_post= Toplevel(tl)
-                        tl_post.geometry('900x600+100-100') 
-                        tl_post.title('MyPhotos')
-                        tl_post.resizable(0,0) 
-                        tl_post.configure(bg = 'lightgrey')
+                    for post_folder in os.listdir(album_folder_full_path): #por cada post em cada album
+                        post_folder_full_path = os.path.join(album_folder_full_path, post_folder) #post path
+                        
+                        if os.path.isdir(post_folder_full_path): #se o post path for uma dir
+                            for file in os.listdir(post_folder_full_path): # por item dentro de cada post
+                                if file.lower().endswith(('.txt')):
+                                    if file.lower() == 'comments.txt':
+                                        continue
+                                    file_path = os.path.join(post_folder_full_path, file)
+                                    with open(file_path, 'r') as read_file:
+                                        check_file = read_file.readlines()
+                                    image_path = None #iniciar como none senão dá erro
+                                    username=None
+                                    post_name_path=None
+                                    for line in check_file:
+                                        print(line)
+                                        print('date_str:', date_str)
+                                        if line == date_str:
+                                            print('usreklvnsdlvsndlvksdlkvsdkvhnsdvhndvhn')  # Use strip to remove leading/trailing whitespaces
+                                            post_name_path = os.path.join(album_folder_full_path, file)
+                                            print(post_name_path)
+                                            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')): #se for uma img
+                                                
+                                                #Nãofunciona apartir daqui
+                                                #Para os parametros da Classe Posts: 
+                                                image_path = os.path.join(post_folder_full_path, file) #criar path paa a img
+                                                print(image_path)
+                                                img = Image.open(image_path) #obter a img
+                                                image = ImageTk.PhotoImage(img)
+                                                username= post_folder_full_path.split(os.path.sep)[1] #dividir a path e obter o nome do user. path.sep separa as /
+                                                print('aiaiiaiaia', username)
+                                                Posts(f_results, image_path, image, username, post_name_path)
+                                                 
+                                    
+            
+                    
+                            
 
 
 
