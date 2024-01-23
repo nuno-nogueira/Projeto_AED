@@ -12,3 +12,6 @@ nuno;food;2024-01-19;17:08
 nuno;food;2024-01-20;16:54
 nuno;photography;2024-01-20;16:52
 nuno;photography;2024-01-22;19:51
+sandra;animals;2024-01-23;12:31
+sandra;anime;2024-01-23;12:38
+sandra;photography;2024-01-23;12:42

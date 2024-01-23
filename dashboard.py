@@ -62,18 +62,7 @@ class dashboard():
         for folder in folders:
             self.lbox_albums.insert(END, folder)
         #Button selecionar Álbum
-        self.btn_pick_album = Button(self.tl_dashboard, text='Choose this Álbum',
-                                    command=lambda: self.func_comments_albums(self.username))
-        self.btn_pick_album.place(x = 500, y = 150)
-        #Label mostrar número de Comentários por Álbum
-        self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
-        self.lbl_number_comments_albums.place(x=500, y=200)
-        
-
-        # --- Por Post:
-
-        #Button selecionar Álbum
-        self.btn_pick_album = Button(self.tl_dashboard, text='Choose this Álbum',
+        self.btn_pick_album = Button(self.tl_dashboard, text='Number of comments on this Album',
                                     command=lambda: self.func_comments_albums(self.username))
         self.btn_pick_album.place(x = 500, y = 150)
         #Label mostrar número de Comentários por Álbum
@@ -81,33 +70,44 @@ class dashboard():
         self.lbl_number_comments_albums.place(x=500, y=200)
 
 
-        # ------------ Número de Comentários por Post ------------------
+        # # --- Por Post:
 
-        lbl_pick_album= Label(self.tl_dashboard, text='Pick an Album')
-        lbl_pick_album.place
-        #Criar um path para a folder do user (que contém os Álbums)
-        self.albums_path = os.path.join('.\\users_photoalbums\\', username) #não é necessário concatenação, nem \\
-        #Listar os itens dentro da folder do user 
-        items_in_user_folder = os.listdir(self.albums_path) 
-        #Lista para guardar nomes das folders(Álbums) que estão dentro da folder do user
-        folders = []
-        for item in items_in_user_folder:#iterar cada item da folder do user
-            item_path = os.path.join(self.albums_path, item) #criar path para cada Álbum
-            if os.path.isdir(item_path): #e se for uma folder:
-                folders.append(item) #vai para a lista
-        #Listbox dos Álbums 
-        self.lbox_albums= Listbox(self.tl_dashboard, height=5, selectmode='single', font=('Roboto', 8))
-        self.lbox_albums.place(x=500,y=50)
-        #Inserir Álbums na Listbox
-        for folder in folders:
-            self.lbox_albums.insert(END, folder)
-        #Button selecionar Álbum
-        self.btn_pick_album = Button(self.tl_dashboard, text='Choose this Álbum',
-                                    command=lambda: self.func_comments_albums(self.username))
-        self.btn_pick_album.place(x = 500, y = 150)
-        #Label mostrar número de Comentários por Álbum
-        self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
-        self.lbl_number_comments_albums.place(x=500, y=200)
+        # #Button selecionar Álbum
+        # self.btn_pick_album = Button(self.tl_dashboard, text='Number of comments on this Post',
+        #                             command=lambda: self.func_comments_albums(self.username))
+        # self.btn_pick_album.place(x = 500, y = 150)
+        # #Label mostrar número de Comentários por Álbum
+        # self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
+        # self.lbl_number_comments_albums.place(x=500, y=200)
+
+
+        # # ------------ Número de Comentários por Post ------------------
+
+        # lbl_pick_album= Label(self.tl_dashboard, text='Pick an Album')
+        # lbl_pick_album.place
+        # #Criar um path para a folder do user (que contém os Álbums)
+        # self.albums_path = os.path.join('.\\users_photoalbums\\', username) #não é necessário concatenação, nem \\
+        # #Listar os itens dentro da folder do user 
+        # items_in_user_folder = os.listdir(self.albums_path) 
+        # #Lista para guardar nomes das folders(Álbums) que estão dentro da folder do user
+        # folders = []
+        # for item in items_in_user_folder:#iterar cada item da folder do user
+        #     item_path = os.path.join(self.albums_path, item) #criar path para cada Álbum
+        #     if os.path.isdir(item_path): #e se for uma folder:
+        #         folders.append(item) #vai para a lista
+        # #Listbox dos Álbums 
+        # self.lbox_albums= Listbox(self.tl_dashboard, height=5, selectmode='single', font=('Roboto', 8))
+        # self.lbox_albums.place(x=500,y=50)
+        # #Inserir Álbums na Listbox
+        # for folder in folders:
+        #     self.lbox_albums.insert(END, folder)
+        # #Button selecionar Álbum
+        # self.btn_pick_album = Button(self.tl_dashboard, text='Number of comments on this Post',
+        #                             command=lambda: self.func_comments_albums(self.username))
+        # self.btn_pick_album.place(x = 500, y = 150)
+        # #Label mostrar número de Comentários por Álbum
+        # self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
+        # self.lbl_number_comments_albums.place(x=500, y=200)
 
     # - Função Número Total de Posts -------------------------------
 
