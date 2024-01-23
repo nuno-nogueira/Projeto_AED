@@ -342,7 +342,8 @@ class Edit():
     def save_changes(self, path, who_posted):
         new_name = self.name_edit.get()
         new_description = self.description_edit.get('1.0','end-1c')
-        new_description = self.description_edit.replace('\n',' ')
+        if new_description.find('\n') != -1:
+            new_description = self.description_edit.replace('\n',' ')
         new_category_chosen = self.categories.get()
         os.chdir(path)
         if self.filename == '':
@@ -357,7 +358,7 @@ class Edit():
                         os.remove(file)
                         new_file = new_name + '.txt'
                         f = open(new_file, 'x', encoding = 'utf-8')
-                        f.write('{0}\n{1}\n{2}\n{3};\n'.format(who_posted, new_name, date, new_description, new_category_chosen))
+                        f.write('{0}\n{1}\n{2}\n{3}\n'.format(who_posted, new_name, date, new_description, new_category_chosen))
                         f.close()
         else:
             for file in os.listdir(os.getcwd()):

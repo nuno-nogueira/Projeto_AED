@@ -8,8 +8,9 @@ from admins import admins
 from posts import Posts
 from dashboard import dashboard
 from add_content import Add_Post, Create_Album
-from notifications import show_notifications
 
+from notifications import show_notifications
+from search import *
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
 from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar  
 import os
@@ -97,7 +98,7 @@ class Main_App:
             self.profile_icon.image = icon2
             self.profile_icon.place( x = 940, y = 8)
  
-#           Icon de notificações (FONTE - SITE FLATICON)
+#           Icon de dashboard (FONTE - SITE FLATICON)
             icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((35,35))
             icon3 = ImageTk.PhotoImage(icon3)
             self.dashboard_icon = Button(self.nav_bar, image = icon3, bd = 0, bg = '#333333', 
@@ -105,7 +106,7 @@ class Main_App:
             self.dashboard_icon.image = icon3
             self.dashboard_icon.place(x = 800, y = 8)
 
-#           Icon da dashboard (FONTE - SITE FLATICON)
+#           Icon das notificações (FONTE - SITE FLATICON)
             icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((40,40))
             icon4 = ImageTk.PhotoImage(icon4)
             self.bell_icon = Button(self.nav_bar, image = icon4, bg = '#333333', bd = 0,
@@ -168,7 +169,7 @@ class Main_App:
                 self.btn_tl_admin.place_forget()
             else: # Senão
                 self.profile_click_frame.place(x = 870, y = 0)
-                self.profile_click_frame.lift() # Para a frame aparecer por cima de todos os outros widgets
+                self.profile_click_frame.lift()
                 self.log_out.place(x = 0, y = 0)
                 if admin == True:
                     self.btn_tl_admin.place(x = 0, y = 45)
@@ -253,7 +254,7 @@ class Main_App:
             select_button.place(x=95, y=200)
             # Button para pesquisar
             self.btn_search = Button(self.f_search, width=20, height=2, text='Search for Posts', bg='lightblue',
-                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.get_selected_date))
+                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
             self.btn_search.place(x=20, y=240)
             
  
@@ -288,8 +289,8 @@ class Main_App:
         def get_selected_date(self):
             '''
             '''
-            selected_date = self.cal.get_date()
-            print(selected_date)
+            self.selected_date = self.cal.get_date()
+            print(self.selected_date)
                 
 
 #       ----------- + POST Button ---------------------------------------------------
@@ -331,12 +332,10 @@ class Main_App:
                 full_path = os.path.join(self.albums_directory, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
                 if os.path.isdir(full_path): #se for uma folder
                     album_folders.append(i) #Adiciona o nome desse album á lista
-            
-            for idx, album_folder in enumerate(album_folders):
-                # Calculate row and column based on the index
+            for idx, album_folder in enumerate(album_folders): #enumerate retorna o index idx e o valor(album_folder) de cada elemento da lista
+                # Calcular row e col apartir do index
                 row = idx // 4
                 col = idx % 4
-
                 btn_my_album = Button(self.f_my_albums, text=album_folder, bg='#f8d775', width=18, height=5,
                                     command=lambda tl=tl, username=username, folder=album_folder: self.open_my_album_frame(tl, folder, username))
                 btn_my_album.grid(row=row, column=col, padx=30, pady=30)
@@ -345,17 +344,27 @@ class Main_App:
             '''
             Cada Álbum abre uma nova Frame com Publicações e Comentários do Álbum
             '''
-            self.album_folder=album_folder#para poder usar no file albums_comments
-            # Frame com Publicações
-            self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
-            self.f_my_album.place(x=200,y=60)
+            from edit_albums import edit_album
+            self.album_folder = album_folder  # para poder usar no file albums_comments
+            # Frame do Album com os seus Posts
+            self.f_my_album = Frame(tl, width=800, height=600, bg='pink')
+            self.f_my_album.place(x=200, y=60)
+            # Button Close Album
+            btn_destroy_frame = Button(self.f_my_album, text=' X ', command=self.f_my_album.destroy)
+            btn_destroy_frame.place(x=0, y=0)
+            # Button Edit Album
+            btn_edit_album = Button(self.f_my_album,text='Edit',
+                                    command=edit_album)
+            btn_edit_album.place(x=30,y=0)
+
             # Frame com Comentários
-            self.f_my_album_comments= Frame(tl, width=200, height=540, bg='blue')
-            self.f_my_album_comments.place(x=800,y=60)
+            self.f_my_album_comments = Frame(self.f_my_album, width=250, height=540, bg='pink')
+            self.f_my_album_comments.place(x=588, y=50)
             Albums_Comments(self.f_my_album_comments, self.album_folder, self.username)
 
 
-#           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
+
+            # ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
             
             # Criar um path até ao Álbum clicado
             album_path = os.path.join('.\\users_photoalbums\\', username, self.album_folder) #não é necessário concatenação, nem \\
@@ -367,30 +376,13 @@ class Main_App:
                 if os.path.isdir(full_path): #se full_path for uma folder
                     my_album_post.append(i) #Adiciona o nome desse Post à lista
 
-
-
-            # Create a Canvas widget to contain the frame and the scrollbar
-            canvas = Canvas(self.f_my_album, width=600, height=600, bg='pink')
-            canvas.grid(row=0, column=0, sticky="nsew")  # Use grid to make the canvas expandable
-
-            # Create a Frame inside the Canvas to hold your buttons
-            frame_inside_canvas = Frame(canvas, bg='pink')
-            canvas.create_window((0, 0), window=frame_inside_canvas, anchor="nw")
-
-            # Create a vertical scrollbar
-            scrollbar = Scrollbar(self.f_my_album, orient="vertical", command=canvas.yview)
-            scrollbar.grid(row=0, column=1, sticky="ns")  # Place scrollbar on the right side
-
-            # Configure the canvas to scroll vertically
-            canvas.configure(yscrollcommand=scrollbar.set)
-
-            # Add buttons to the frame_inside_canvas instead of directly to f_my_album
-            # for row, i in enumerate(my_album_post):
-
-            # Cada Post vai ser um Button
-            for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
+            # Frame dentro da Frame f_my_album para aparecerem os buttons/posts
+            frame_myalbum_posts = Frame(self.f_my_album, bg='#fff', width=600, height=500)  # Corrected the typo here
+            frame_myalbum_posts.place(x=0, y=50)
+            
+            # Cada Post vai ser um Button:
+            for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post
                 post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
-
                 # Obter a imagem que está dentro da folder, que por sua vez está dentro do Álbum 
                 image_files = []
                 extensions = ('.png', '.jpg', '.jpeg', '.gif','.webp')
@@ -407,25 +399,19 @@ class Main_App:
                     image = Image.open(image_path)
                     image = image.resize((150, 150)) # width, height
                     photo = ImageTk.PhotoImage(image) #para lembrar o Python que não pedi para apagar nada
-
                     resized_image = Image.open(image_path)
                     resized_image = resized_image.resize((450, 350))
-
                     # Criar um novo PhotoImage da imagem redimensionada
                     resized_photo = ImageTk.PhotoImage(resized_image)
-                    btn_my_post = Button(frame_inside_canvas, image=photo, width=150, height=150,
-                                        command=lambda img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
+                    btn_my_post = Button(frame_myalbum_posts, image=photo, width=150, height=150,
+                                        command=lambda img=resized_photo, image_path=image_path: Posts(frame_myalbum_posts, image_path, img, self.username))
                     btn_my_post.image = photo  #''garbage collection'' para a imagem não ser apagada automaticamente para criar memória livre
                 else:
-                    btn_my_post = Button(frame_inside_canvas, text=i, width=40, height=5,
-                                        command=lambda  img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
+                    btn_my_post = Button(frame_myalbum_posts, text=i, width=40, height=5,
+                                        command=lambda  img=resized_photo, image_path=image_path: Posts(frame_myalbum_posts, image_path, img, self.username))
+                btn_my_post.grid(column=row % 3,  row=row // 3, padx=20, pady=10)
 
-                btn_my_post.grid(column=row % 3,  row=row // 3, padx=20, pady=40)
-
-            # Update the scroll region when the size of the frame_inside_canvas changes
-            frame_inside_canvas.update_idletasks()
-            canvas.config(scrollregion=canvas.bbox("all"))
-
+           
     def open_user_frame(self, username, tl):
             '''
             Verifica se o user existe 
@@ -457,10 +443,13 @@ class Main_App:
                                     command=lambda tl=tl, username=username, folder=user_album_folder: self.open_user_album_frame(tl, folder, username))
                 btn_my_album.grid(row=row, column=col, padx=30, pady=30)
 
+# ---------------------------------------------------------------------------
+
     def open_user_album_frame(self, tl, user_album_folder, username):
             '''
             Cada Álbum abre uma nova Frame com Publicações e Comentários do Álbum
             '''
+            
             self.user_album_folder=user_album_folder#para poder usar no file albums_comments
             # Frame com Publicações
             self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
@@ -470,6 +459,7 @@ class Main_App:
             self.f_my_album_comments.place(x=800,y=60)
             Albums_Comments(self.f_my_album_comments, self.user_album_folder, self.username)
 
+            
 
 #           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
             
@@ -494,14 +484,21 @@ class Main_App:
             canvas.create_window((0, 0), window=frame_inside_canvas, anchor="nw")
 
             # Create a vertical scrollbar
-            scrollbar = Scrollbar(self.f_my_album, orient="vertical", command=canvas.yview)
+            scrollbar = Scrollbar(canvas, orient="vertical", command=canvas.yview)
             scrollbar.grid(row=0, column=1, sticky="ns")  # Place scrollbar on the right side
 
             # Configure the canvas to scroll vertically
             canvas.configure(yscrollcommand=scrollbar.set)
+            # Configure the column weights
+            self.f_my_album.grid_columnconfigure(0, weight=1)  # Make column 0 (canvas) expandable
 
-            # Add buttons to the frame_inside_canvas instead of directly to f_my_album
-            # for row, i in enumerate(my_album_post):
+            # Ensure that the canvas expands with the frame
+            self.f_my_album.update_idletasks()  # Update the layout to get the correct size
+            canvas.config(scrollregion=canvas.bbox("all"))  # Update scroll region to include the actual size
+
+            # Adjust the placement of the scrollbar
+            scrollbar.place(x=600, y=0, height=600)
+  
 
 
 
