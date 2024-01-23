@@ -83,7 +83,7 @@ class Main_App:
             self.profile_icon.image = icon2
             self.profile_icon.place( x = 940, y = 8)
  
-#           Icon de notificações (FONTE - SITE FLATICON)
+#           Icon de dashboard (FONTE - SITE FLATICON)
             icon3 = Image.open(Path('../Projeto_AED/images/icons/dashboard_icon.png')).resize((35,35))
             icon3 = ImageTk.PhotoImage(icon3)
             self.dashboard_icon = Button(self.nav_bar, image = icon3, bd = 0, bg = '#333333', 
@@ -91,7 +91,7 @@ class Main_App:
             self.dashboard_icon.image = icon3
             self.dashboard_icon.place(x = 800, y = 8)
 
-#           Icon da dashboard (FONTE - SITE FLATICON)
+#           Icon das notificações (FONTE - SITE FLATICON)
             icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((40,40))
             icon4 = ImageTk.PhotoImage(icon4)
             self.bell_icon = Button(self.nav_bar, image = icon4, bg = '#333333', bd = 0,
@@ -154,7 +154,7 @@ class Main_App:
                 self.btn_tl_admin.place_forget()
             else: # Senão
                 self.profile_click_frame.place(x = 870, y = 0)
-                self.profile_click_frame.lift() # Para a frame aparecer por cima de todos os outros widgets
+                self.profile_click_frame.lift()
                 self.log_out.place(x = 0, y = 0)
                 if admin == True:
                     self.btn_tl_admin.place(x = 0, y = 45)
@@ -336,8 +336,8 @@ class Main_App:
             btn_edit_album.place(x=30,y=0)
 
             # Frame com Comentários
-            self.f_my_album_comments = Frame(self.f_my_album, width=200, height=540, bg='blue')
-            self.f_my_album_comments.place(x=600, y=60)
+            self.f_my_album_comments = Frame(self.f_my_album, width=250, height=540, bg='pink')
+            self.f_my_album_comments.place(x=588, y=50)
             Albums_Comments(self.f_my_album_comments, self.album_folder, self.username)
 
 
