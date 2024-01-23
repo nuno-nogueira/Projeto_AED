@@ -519,3 +519,5 @@ class Main_App:
             # Update the scroll region when the size of the frame_inside_canvas changes
             frame_inside_canvas.update_idletasks()
             canvas.config(scrollregion=canvas.bbox("all"))
+
+
