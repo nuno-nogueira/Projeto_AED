@@ -13,7 +13,7 @@ import datetime
 
 #       ----- Abrir um Post ao clicar no meu álbum de fotos ---------- 
 class Posts():
-    def __init__(self, f_my_album, image_path, image, username):
+    def __init__(self, f_my_album, image_path, image, username, post_name_path):
         ''' 
         Cada Post abre um TopLevel()
         '''
