@@ -82,7 +82,6 @@ window.title('myPhotos')
 window.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
 window.configure(bg = '#fff')
 
-# App(window)
-app_instance = App(window)
+App(window)
 
 window.mainloop()

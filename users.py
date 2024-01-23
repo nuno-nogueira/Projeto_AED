@@ -16,9 +16,9 @@ class Sign_Up():
         """
 #       Configurações da janela da TopLevel
         self.tl = Toplevel(window)
-        self.tl.geometry('1000x600+100-100') #  Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
+        self.tl.geometry('1000x600+100-100') # Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
         self.tl.title('myPhotos')
-        self.tl.resizable(0,0) #    Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
+        self.tl.resizable(0,0) # Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
 
 #       Variável que cria a frame para a página do Sign Up
         self.sign_up_frame = Frame(self.tl, width = 1000, height = 600, bg = '#333')
@@ -93,7 +93,7 @@ class Sign_Up():
 #       Se o utilizador inseriu não tiver nenhum '@', não é um email!
         if self.email.find('@') == -1:
 #       Se for igual a -1 significa que não encontrou nenhum '@'!
-            messagebox.showerror('Error','Insert a valid email!')
+            messagebox.showerror('Error','Insert a valid email!', parent = self.tl)
             return #    A função termina
     
 #       Abre-se o ficheiro onde estão presentes as informações dos utilizadores em modo leitura para verificar se o username que o utilizador inseriu já está presente no ficheiro
@@ -109,13 +109,13 @@ class Sign_Up():
             self.email_repetido = linhas[:linhas.find(';')]#Esta variável serve para buscar o user em cada linha para depois verificar se combina com o user que o utilizador inseriu
             if self.email == self.email_repetido:
 #           Se for igual, mostra uma messagebox com um erro
-                messagebox.showinfo('Try again!','The username you put is already in use! Try another one!') 
-                return #    A função termina
+                messagebox.showinfo('Try again!','The username you put is already in use! Try another one!', parent = self.tl) 
+                return # A função termina
             self.user_repetido = linhas[linhas.find(';') + 1:linhas.rfind(';')] #Esta variável serve para buscar o email em cada linha para depois verificar se combina com o user que o utilizador inseriu
             if self.username == self.user_repetido:
 #           Se for igual, mostra uma messagebox com um erro
-                messagebox.showinfo('Try again!','The email you put has an account associated to it already!') 
-                return #    A função termina
+                messagebox.showinfo('Try again!','The email you put has an account associated to it already!', parent = self.tl) 
+                return
         
         #   Se nem o username e nem o username que o utilizador inseriu não estiverem no ficheiro, pode-se assim criar uma conta nova com as informações que o utilizador inseriu
         self.conteudo = self.email + ';' + self.username + ';' + self.password #A variável conteudo guarda o username, o email, e a password inseridos para depois inserir no ficheiro 
@@ -126,7 +126,7 @@ class Sign_Up():
         f.close() # Fecha o ficheiro
 
 #       E mostra-se uma messagebox onde informa o utilizador que a conta foi criada com sucesso!! :DD
-        messagebox.showinfo('Done!','You have sucessfully created an account in myPhotos! \n Login to start using the app! :)')
+        messagebox.showinfo('Done!','You have sucessfully created an account in myPhotos! \n Login to start using the app! :)', parent = self.tl)
         self.go_back_sign_up()
 
 #       Criar folder no momento de criar conta para armazenar os albums de fotografias desse user
@@ -194,7 +194,7 @@ class Login():
 
 #       Se o utilizador não tiver inserido algum ou nenhum dos campos, mostra uma messagebox com erro
         if self.username == '' or self.password == '':
-            messagebox.showerror('Erro','You have to fill all the spaces!')
+            messagebox.showerror('Error','You have to fill all the spaces!', parent = self.tl)
             return
 
 #       Abre-se o ficheiro 'users.txt' em modo leitura
@@ -209,7 +209,7 @@ class Login():
 #           ADMINS
             if self.username == 'sandra' and self.password == '123' or self.username =='nuno' and self.password == '456' or self.username == 'ken' and self.password == '789':
                 admin = True
-                messagebox.showinfo('Sucess!','Welcome admin! :)')
+                messagebox.showinfo('Sucess!','Welcome admin! :)', parent = self.tl)
                 self.tl.destroy()
                 Main_App(self.window, self.username, admin)
                 return
@@ -219,11 +219,11 @@ class Login():
 
             #Se o username E password estiverem corretas, mostra-se uma messagebox a informar o utilizador que foi feito login com sucesso!
             if self.username == self.verificar_username and self.password == self.verificar_pass:
-                messagebox.showinfo('Done!','You have sucessfully loged into the myPhotos! :)\n ')
+                messagebox.showinfo('Done!','You have sucessfully loged into the myPhotos! :)\n ', parent = self.tl)
                 self.tl.destroy()
                 Main_App(self.window, self.username, admin)
                 return
         
 #       Se depois de ter percorrido a variável 'conteudo' toda e não ter-se encontrado as informações da conta:
 #       Mostra-se uma messagebox de erro a informar o utilizador o ocorrido!
-        messagebox.showerror('Error','The data you inserted in incorrect, try again!')
+        messagebox.showerror('Error','The data you inserted in incorrect, try again!', parent = self.tl)

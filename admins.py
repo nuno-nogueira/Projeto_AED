@@ -33,16 +33,16 @@ class admins():
             user_name=line.split(';')
             self.lbox_users.insert(END, user_name[1]) #END significa que cada 'i' é inserido no fim do conteúdo da listbox
 
-        lbl_remove_user= Label(tl_admin, text='Select the user first', font=('Roboto, 12'), fg='#fff', bg='#333')
+        lbl_remove_user= Label(tl_admin, text='Select the user first', font=('Roboto', 12), fg='#fff', bg='#333')
         lbl_remove_user.place(x= 50, y=380)
         #Button para remover user
-        self.btn_remove_user = Button(self.tl_admin, relief='raised', text='Remove', bg= '#fff', fg='#333', border = '0', padx=5, pady=5, font=('Roboto', 14), 
+        self.btn_remove_user = Button(self.tl_admin, relief='raised', text='Remove', bg= '#ccc', fg='white', border = '0', padx=5, pady=5, font=('Roboto', 14), 
                                       command=self.func_remove_account)
-        self.btn_remove_user.place(x = 170, y = 380)
+        self.btn_remove_user.place(x = 50, y = 410)
         #Button para guardar remoção
-        self.btn_save = Button(self.tl_admin, relief='raised', width=15, text='Save changes', bg= 'green', fg='#fff', border = '0', padx=5, pady=5, font=('Roboto', 14), 
+        self.btn_save = Button(self.tl_admin, width=15, text='Save changes', bg= 'green', fg='#fff', border = '0', padx=5, pady=5, font=('Roboto', 14), 
                                command=self.func_save_account_deletion)
-        self.btn_save.place(x = 50, y = 400)
+        self.btn_save.place(x = 50, y = 460)
         
         
 
