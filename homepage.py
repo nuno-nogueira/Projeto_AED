@@ -8,7 +8,7 @@ from admins import admins
 from posts import Posts
 from dashboard import dashboard
 from add_content import Add_Post, Create_Album
-
+from search import *
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
 from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar 
 
@@ -232,7 +232,7 @@ class Main_App:
             select_button.place(x=95, y=200)
             # Button para pesquisar
             self.btn_search = Button(self.f_search, width=20, height=2, text='Search for Posts', bg='lightblue',
-                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.get_selected_date))
+                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
             self.btn_search.place(x=20, y=240)
             
  
@@ -267,8 +267,8 @@ class Main_App:
         def get_selected_date(self):
             '''
             '''
-            selected_date = self.cal.get_date()
-            print(selected_date)
+            self.selected_date = self.cal.get_date()
+            print(self.selected_date)
                 
 
 #       ----------- + POST Button ---------------------------------------------------

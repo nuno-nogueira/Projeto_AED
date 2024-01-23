@@ -133,19 +133,19 @@ class Add_Post():
   def create_post(self):
     # Se alguma coisa faltar // o utilizador não tiver preenchido
     if self.filename == '':
-       messagebox.showerror('Error','You have to choose a picture to make a post!')
+       messagebox.showerror('Error','You have to choose a picture to make a post!', parent = self.tl_my_post)
        return
     if self.add_to_album.get() == '':
-       messagebox.showerror('Error','You have to select an album to save this post!')
+       messagebox.showerror('Error','You have to select an album to save this post!', parent = self.tl_my_post)
        return
     if self.photo_name.get() == '':
-       messagebox.showerror('Error', 'You have to select a name for your post!')
+       messagebox.showerror('Error', 'You have to select a name for your post!', parent = self.tl_my_post)
        return
     if self.description.get('1.0','end-1c') == '':
-       messagebox.showerror('Error','You have to insert a description for your post!')
+       messagebox.showerror('Error','You have to insert a description for your post!', parent = self.tl_my_post)
        return
     if self.categories.get() == '':
-       messagebox.showerror('Error','You have to select a category for your post!')
+       messagebox.showerror('Error','You have to select a category for your post!', parent = self.tl_my_post)
        return
     username = self.username
     data = datetime.datetime.now()
@@ -167,7 +167,7 @@ class Add_Post():
         name = name.replace('.txt','')
         file.write('{0}\n{1}\n{2}\n{3};\n{4}\n0\n-;'.format(username, name, date, description, category))
         file.close()
-        messagebox.showinfo('Sucess!','The post has been created! Go check it out in its corresponding album!')
+        messagebox.showinfo('Sucess!','The post has been created! Go check it out in its corresponding album!', parent = self.tl_my_post)
     filename = 'comments.txt'
     with open(filename, 'x') as file:
        file.close()
@@ -237,10 +237,10 @@ class Create_Album():
     self.album_name_str = self.album_name.get()
     album_dir = "../Projeto_AED/users_photoalbums/" + self.username + '/' + self.album_name_str
     if os.path.isdir(Path(album_dir)):
-        messagebox.showerror('Error', 'You already have an album with that name.')
+        messagebox.showerror('Error', 'You already have an album with that name.', parent = self.tl_create_album)
     else:
         os.mkdir(Path(album_dir))
-        messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.') 
+        messagebox.showinfo('Success', f'Album "{self.album_name_str}" created.', parent = self.tl_create_album) 
         self.created_album=1
         file_comments= open()
     return
