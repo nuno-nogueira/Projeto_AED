@@ -42,7 +42,6 @@ class Albums_Comments():
         self.chars_warning.place(x=0, y=180)
 
         self.update_comments(path_album_comments_file)
-        print('hi')
 #      
     def create_comment(self, path_album_comments_file, username):
         """

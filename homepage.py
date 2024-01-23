@@ -228,12 +228,11 @@ class Main_App:
             self.cal = DateEntry(self.f_search, width=8, background='purple', foreground='white', borderwidth=2)
             self.cal.place(x=20, y=205)
             # Button para selecionar uma data
-            self.selected_date = self.cal.get_date()
-            select_button = Button(self.f_search, text="Select this Date", bg='#fff', command=self.selected_date)
+            select_button = Button(self.f_search, text="Select this Date", bg='#fff', command=self.get_selected_date)
             select_button.place(x=95, y=200)
             # Button para pesquisar
-            self.btn_search = Button(self.f_search, width=20, height=2, text='Search for results', bg='lightblue',
-                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
+            self.btn_search = Button(self.f_search, width=20, height=2, text='Search for Posts', bg='lightblue',
+                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.get_selected_date))
             self.btn_search.place(x=20, y=240)
             
 
@@ -265,20 +264,12 @@ class Main_App:
 
 #       ------------------------------- FUNÇÕES HOMEPAGE ----------------------------
 
-        
-        
-
-        # def func_selected_date(self, tl, username):
-        #     '''
-        #     Ao clicar no Button 'Following' abre uma Frame para ver
-        #     os meus Albums favoritos
-        #     '''
-        #     #Frame 
-        #     self.f_my_albums= Frame(tl, width=800, height=540, bg='lightblue')
-        #     self.f_my_albums.place(x=200,y=60)
-        #     btn_destroy_frame= Button(self.f_my_albums, text=' X ', command=self.f_my_albums.destroy)
-        #     btn_destroy_frame.place(x=0,y=0)
-            
+        def get_selected_date(self):
+            '''
+            '''
+            selected_date = self.cal.get_date()
+            print(selected_date)
+                
 
 #       ----------- + POST Button ---------------------------------------------------
         
@@ -374,6 +365,125 @@ class Main_App:
 
             # Add buttons to the frame_inside_canvas instead of directly to f_my_album
             # for row, i in enumerate(my_album_post):
+
+            # Cada Post vai ser um Button
+            for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
+                post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
+
+                # Obter a imagem que está dentro da folder, que por sua vez está dentro do Álbum 
+                image_files = []
+                extensions = ('.png', '.jpg', '.jpeg', '.gif','.webp')
+                for extension in extensions:
+                    matching_files = []
+                    for i in os.listdir(post_path): #por cada Post path
+                        if i.lower().endswith(extension):
+                            matching_files.append(i) #reunimos as imagens numa lista
+
+                    image_files.extend(matching_files) #adicionar os matching_files à lista image_files
+
+                if image_files: #se a lista tiver pelo menos um elemento, a condição fica True e a próximas linhas são executadas
+                    image_path = os.path.join(post_path, image_files[0]) #juntar o path do post com a imagem
+                    image = Image.open(image_path)
+                    image = image.resize((150, 150)) # width, height
+                    photo = ImageTk.PhotoImage(image) #para lembrar o Python que não pedi para apagar nada
+
+                    resized_image = Image.open(image_path)
+                    resized_image = resized_image.resize((450, 350))
+
+                    # Criar um novo PhotoImage da imagem redimensionada
+                    resized_photo = ImageTk.PhotoImage(resized_image)
+                    btn_my_post = Button(frame_inside_canvas, image=photo, width=150, height=150,
+                                        command=lambda img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
+                    btn_my_post.image = photo  #''garbage collection'' para a imagem não ser apagada automaticamente para criar memória livre
+                else:
+                    btn_my_post = Button(frame_inside_canvas, text=i, width=40, height=5,
+                                        command=lambda  img=resized_photo, image_path=image_path: Posts(frame_inside_canvas, image_path, img, self.username))
+
+                btn_my_post.grid(column=row % 3,  row=row // 3, padx=20, pady=40)
+
+            # Update the scroll region when the size of the frame_inside_canvas changes
+            frame_inside_canvas.update_idletasks()
+            canvas.config(scrollregion=canvas.bbox("all"))
+
+    def open_user_frame(self, username, tl):
+            '''
+            Verifica se o user existe 
+            '''
+            self.search_value = self.search_entry.get()
+            # --- Fazer os Álbums aparecer:
+            # Meter numa variável a diretoria/pasta dos álbums do user
+            print('hi')
+            print(self.search_value)
+            user_folder = os.path.join("users_photoalbums", self.search_value)
+            print(user_folder)
+            if os.path.exists(user_folder):
+                user_album_frame = Frame(tl, width=600, height=540)
+                user_album_frame.place(x=300, y=60)
+                user_album_frame.lift()
+
+            # Listar os álbums
+            user_album_folders = []
+            for i in os.listdir(user_folder): #Por cada folder
+                full_path = os.path.join(user_folder, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
+                if os.path.isdir(full_path): #se for uma folder
+                    user_album_folders.append(i) #Adiciona o nome desse album á lista
+            
+            for idx, user_album_folder in enumerate(user_album_folders):
+                # CalculaR row and column apartir do index
+                row = idx // 4
+                col = idx % 4
+                btn_my_album = Button(user_album_frame, text=user_album_folder, bg='#f8d775', width=18, height=5,
+                                    command=lambda tl=tl, username=username, folder=user_album_folder: self.open_user_album_frame(tl, folder, username))
+                btn_my_album.grid(row=row, column=col, padx=30, pady=30)
+
+    def open_user_album_frame(self, tl, user_album_folder, username):
+            '''
+            Cada Álbum abre uma nova Frame com Publicações e Comentários do Álbum
+            '''
+            self.user_album_folder=user_album_folder#para poder usar no file albums_comments
+            # Frame com Publicações
+            self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
+            self.f_my_album.place(x=200,y=60)
+            # Frame com Comentários
+            self.f_my_album_comments= Frame(tl, width=200, height=540, bg='blue')
+            self.f_my_album_comments.place(x=800,y=60)
+            Albums_Comments(self.f_my_album_comments, self.user_album_folder, self.username)
+
+
+#           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
+            
+            # Criar um path até ao Álbum clicado
+            album_path = os.path.join('.\\users_photoalbums\\', username, self.user_album_folder) #não é necessário concatenação, nem \\
+            
+            # Listar os Posts do meu Álbum
+            my_album_post = []
+            for i in os.listdir(album_path): #por cada folder(post) dentro da folder(Álbum)
+                full_path = os.path.join(album_path , i) #está a juntar a folder(álbum) com a folder(post) em vez de usar concatenação e '\\'
+                if os.path.isdir(full_path): #se full_path for uma folder
+                    my_album_post.append(i) #Adiciona o nome desse Post à lista
+
+
+
+            # Create a Canvas widget to contain the frame and the scrollbar
+            canvas = Canvas(self.f_my_album, width=600, height=600, bg='pink')
+            canvas.grid(row=0, column=0, sticky="nsew")  # Use grid to make the canvas expandable
+
+            # Create a Frame inside the Canvas to hold your buttons
+            frame_inside_canvas = Frame(canvas, bg='pink')
+            canvas.create_window((0, 0), window=frame_inside_canvas, anchor="nw")
+
+            # Create a vertical scrollbar
+            scrollbar = Scrollbar(self.f_my_album, orient="vertical", command=canvas.yview)
+            scrollbar.grid(row=0, column=1, sticky="ns")  # Place scrollbar on the right side
+
+            # Configure the canvas to scroll vertically
+            canvas.configure(yscrollcommand=scrollbar.set)
+
+            # Add buttons to the frame_inside_canvas instead of directly to f_my_album
+            # for row, i in enumerate(my_album_post):
+
+
+
 
             # Cada Post vai ser um Button
             for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.

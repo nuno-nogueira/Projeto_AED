@@ -11,10 +11,7 @@ class dashboard():
         '''
         self.tl_dashboard = tl_dashboard
         self.username=username
-
-        # self.lbox_posts= Listbox(self.tl_dashboard, height=10, selectmode='single', font=('Roboto', 16))
-        # self.lbox_posts.place(x=80,y=50)
-
+        
         # ------------ Número Total de Posts --------------------------
         
         btn_total_posts = Button(self.tl_dashboard, text="See Total Number of Posts", 
@@ -110,10 +107,6 @@ class dashboard():
         self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
         self.lbl_number_comments_albums.place(x=500, y=200)
 
-        # post_count = 0
-        # lbl_post_count = Label(self.tl_dashboard, text=f"Number of Posts: {post_count}") #''f'' serve para concatenar a string com a variável
-        # lbl_post_count.place(x=30,y=50)
-        
     # - Função Número Total de Posts -------------------------------
 
     def func_count_total_posts(self, username):
@@ -150,7 +143,7 @@ class dashboard():
         my_categ_posts = []
         for line in read_file:
             line_parts = line.split(';')
-            if line_parts[0] == username and line_parts[1] == str(selected_category.strip()):
+            if line_parts[0] == username and line_parts[3] == str(selected_category.strip()):
                 my_categ_posts.append(line)
         str_len = len(my_categ_posts)
         self.lbl_number_posts_by_categ.config(text=str(str_len))
@@ -173,110 +166,4 @@ class dashboard():
         str_len = len(read_file)
         self.lbl_number_comments_albums.config(text=str(str_len))
     
-    
-# # Example usage:
-# file_path = 'path/to/your/file.txt'
-# lines_count = count_lines(file_path)
-# print(f"The number of lines in '{file_path}' is: {lines_count}")
-
-# # Example usage:
-# file_path = 'path/to/your/file.txt'
-# lines_count = count_lines(file_path)
-# print(f"The number of lines in '{file_path}' is: {lines_count}")
-        
-        
-
-    # def func_count_post():
-    #     '''
-    #     Contar o número de Posts
-    #     '''
-    #     post_count += 1
-    #     lbl_count_post.config(text=f"Views: {post_count}") #atualiza a label
-
-
-#---------------------------------------nr visualizacoes--------------------
-        
-    # # def func_count_view_post(self, post_views_count, lbl_post_views):
-    # #     '''
-    # #     Sempre que um user abre um post conta mais uma visualização
-    # #     '''
-
-    # #     post_views_count += 1
-    # #     lbl_post_views.config(text=f"Views: {post_views_count}") #atualiza a label
-        
-    # def increment_views(self, post_path):
-    #         views_file_path = os.path.join(post_path, "/views.txt")
-    #         # Read the current number of views
-    #         try:
-    #             with open(views_file_path, "r") as views_file:
-    #                 current_views = int(views_file.read())
-    #         except FileNotFoundError:
-    #             # If the file doesn't exist, initialize views to 0
-    #             current_views = 0
-
-    #         # Increment the number of views
-    #         current_views += 1
-
-    #         # Write the updated number of views back to the file
-    #         with open(views_file_path, "w") as views_file:
-    #             views_file.write(str(current_views))
-
-    #         return current_views
-
-    # def on_post_button_click(self, img, image_path, username, post_path):
-    #         # Increment views and get the updated count
-    #         views_count = self.increment_views(post_path)
-
-    #         # Perform other actions as needed (e.g., open the post, display views count, etc.)
-    #         print(f"Post opened by {username}. Views: {views_count}")
-    #         # Add your code to handle post opening here
-
-    #         # Now you can use the views_count as needed in your application.
-
-    # def increment_views(self, post_path):
-    #         views_file_path = os.path.join(post_path, "views.txt")
-    #         print(views_file_path)
-            
-    #         # Read the current number of views
-    #         try:
-    #             file_read_views = open(views_file_path, 'r')  # Use 'r' mode for reading
-    #             content = file_read_views.read().strip()  # Read and remove leading/trailing whitespaces
-    #             file_read_views.close()
-
-    #             # Check if the content is not empty before converting to int
-    #             if content:
-    #                 current_views = int(content)
-    #             else:
-    #                 current_views = 0
-    #         except FileNotFoundError:
-    #             # If the file doesn't exist, initialize views to 0
-    #             current_views = 0
-
-    #             # Open the file in 'w+' mode to allow both reading and writing
-    #             file_write_views = open(views_file_path, 'w+')
-    #             file_write_views.write(str(current_views))
-    #             file_write_views.close()
-
-    #         # Increment the number of views
-    #         current_views += 1
-    #         print(current_views)
-
-    #         # Write the updated number of views back to the file
-    #         file_write_views = open(views_file_path, 'w')
-    #         file_write_views.write(str(current_views))
-    #         file_write_views.close()
-
-    #         return current_views
-    # def on_post_button_click(self, img, image_path, username, post_path):
-    #             # Increment views and get the updated count
-    #             views_count = self.increment_views(post_path)
-
-    #             # Perform other actions as needed (e.g., open the post, display views count, etc.)
-    #             print(f"Post opened by {username}. Views: {views_count}")
-    #             # Add your code to handle post opening here
-
-    #             # Now you can use the views_count as needed in your application.
-        
-#---------------------------------------nr visualizacoes-------------------- 
-    
-
+   
