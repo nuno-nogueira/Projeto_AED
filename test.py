@@ -19,3 +19,6 @@ def my_upd(value):
 t1.bind('<KeyRelease>',my_upd) # Key release event to call function.  
 
 my_w.mainloop()  # Keep the window open
+
+import sys
+print(sys.path)

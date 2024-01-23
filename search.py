@@ -10,6 +10,7 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
     '''
     Abre uma Frame para mostrar resultados de pesquisa
     '''
+    print(get_selected_date)
     #Frame para mostrar resultados
     f_results= Frame(tl, width=600, height=700)
     f_results.place(x=200,y=60)
@@ -74,8 +75,6 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
                                 command=lambda:open_tree_post(tree, TclVersion))
     btn_select_searched_post.place(x=100,y=500)
    
-
-
 
 def clear_tree(tree):
         '''
