@@ -19,13 +19,13 @@ class Posts():
         '''
         self.username = username
         self.tl_my_post= Toplevel(f_my_album)
-        self.tl_my_post.geometry('900x600+100-100') 
+        self.tl_my_post.geometry('1000x600+100-100') 
         self.tl_my_post.title('MyPhotos')
         self.tl_my_post.resizable(0,0) 
         self.tl_my_post.configure(bg = 'lightgrey')
 
 #       Canvas com a Imagem do Post
-        canvas = Canvas(self.tl_my_post, width=450, height=350)
+        canvas = Canvas(self.tl_my_post, width=449, height=349)
         canvas.place(x=20,y=20)
             
 #       Redimensionar usando o método zoom
@@ -44,38 +44,51 @@ class Posts():
                 if i == 'comments.txt':
                     comments_file = os.path.join(path, i)
                 else:
-                    post_name = os.path.join(path, i)
+                    post_name_path = os.path.join(path, i)
 
 #       Para aparecer as informações do post (nome, descrição, data)
-        f = open(post_name, 'r')
+        f = open(post_name_path, 'r')
         content = [line.strip('\n') for line in f.readlines()] # Para remover line breaks de cada item na lista
         f.close()
-        who_posted = content[0]
-        post_name = content[1]
-        post_date = content[2]
-        post_description = content[3]
-        post_description = post_description.strip(';')
-        categories_chosen = content[4:]
+        who_posted = content[0] 
+        post_name = content[1] 
+        post_date = content[2] 
+        post_description = content[3] 
+        category_chosen = content[4]
+        likes = int(content[5]) 
+        if len(content) == 5:
+            likes_list = [] # Lista de utilizador que deram gosto
+        else:
+            likes_list = content[6:] # Se a variavel 'content' apenas tiver 5 linhas, significa que nenhum user deu like no post
+                            # Pois todas as linhas depois do nº de gostos (content[5]) é destinado aos users que dao like
+        self.likes = Label(self.tl_my_post, text = likes, fg = '#E04F5F', bg = 'lightgrey', font = ('Roboto', 14))
+        self.likes.place(x = 445, y = 370)
 
 #       Botão para dar gosto // Remover gosto
-        self.like_btn = Button(self.tl_my_post, text = 'Like', width = 8, bg = '#E04F5F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.like_and_dislike)
+        self.like_btn = Button(self.tl_my_post, text = 'Like', width = 8, bg = '#E04F5F', bd = '1', fg = 'black', font = ('Roboto', 12), command = lambda: self.like_and_dislike(post_name_path, who_posted, post_name, post_date, post_description, category_chosen, likes, likes_list))
         self.like_btn.place(x = 360, y = 370)
 
-        self.likes = Label(self.tl_my_post, text = 0, fg = '#E04F5F', bg = 'lightgrey', font = ('Roboto', 14)).place(x = 445, y = 370)
+        for users in likes_list:
+            if users == self.username:
+                self.like_btn.config(text = 'Dislike')
 
 #       Botão para adicionar // Remover dos favoritos
         self.favorite_btn = Button(self.tl_my_post, text = 'Add To Favorites', width = 20, bg = '#FFCB2F', bd = '1', fg = 'black', font = ('Roboto', 12), command = self.add_favorites)
         self.favorite_btn.place(x = 150, y = 370)
 
-#       ----------- Nome do post / descrição / quando foi postado
-        self.post_name_lbl = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = 'lightgrey')
-        self.post_name_lbl.place(x = 20, y = 410)
+#       ----------- Nome do post / categorias / quando foi postado / descrição 
+        self.post_name = Label(self.tl_my_post, text= post_name, font = ('Roboto', 18), bg = 'lightgrey')
+        self.post_name.place(x = 20, y = 410)
             
-        self.post_date_lbl = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
-        self.post_date_lbl.place( x = 20, y = 450)
+        category_display = category_chosen.title() # Capitalizar a primeira letra
+        self.category = Label(self.tl_my_post, text = category_display, font = ('Roboto', 16), bg = '#F0F0F0', fg = 'black')
+        self.category.place(x = 230, y = 435)
 
-        self.post_description = Text(self.tl_my_post, font = ('Roboto', 10), width = 30, height = 8, bd = 0, bg = 'lightgrey')
-        self.post_description.place( x = 20, y = 465)
+        self.post_date_ = Label(self.tl_my_post, text= "Posted by: "+ who_posted + '; ' + post_date, font = ('Roboto', 8),  bg = 'lightgrey')
+        self.post_date_.place( x = 20, y = 450)
+
+        self.post_description = Text(self.tl_my_post, font = ('Roboto', 10), width = 40, height = 5, bd = 0, bg = 'lightgrey')
+        self.post_description.place( x = 20, y = 470)
         self.post_description.insert(END, post_description)
         self.post_description.config(state = 'disabled')
         
@@ -94,7 +107,7 @@ class Posts():
         self.update_comments(comments_file)
 
 #       ------ Botão para modificar o post (imagem, nome, descrição; Exclusivamente para quem criou o post)
-        self.edit = Button(self.tl_my_post, text = 'Edit', width = 8, bg = 'lightgrey', font = ('Roboto', 12), command =lambda image=image: Edit(self.tl_my_post, who_posted, post_name, post_description, categories_chosen, path, image))
+        self.edit = Button(self.tl_my_post, text = 'Edit', width = 8, bg = 'lightgrey', font = ('Roboto', 14), command =lambda image=image: Edit(self.tl_my_post, who_posted, post_name, post_description, category_chosen, path, image))
         if self.username == who_posted:
             self.edit.place( x = 30, y = 550)
 
@@ -115,11 +128,29 @@ class Posts():
                 self.chars_warning.config(text = '', bg = '#F0F0F0')
         self.add_comment.bind('<KeyRelease>', count_chars_in_comment) # Para chamar a função cada vez que o utilizador clica numa tecla
 
-    def like_and_dislike(self):
+    def like_and_dislike(self,post_name_path, who_posted, post_name, post_date, post_description, category_chosen, likes, likes_list):
+        likes = int(self.likes.cget("text"))
         if self.like_btn.cget("text") == "Like":
+            likes += 1
+            likes_list.append(self.username)
+            f = open(post_name_path, 'w')
+            f.write('{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n'.format(who_posted, post_name, post_date, post_description, category_chosen, likes))
+            for users in likes_list:
+                f.write(users + '\n')
+            f.close()              
             self.like_btn.config(text = "Dislike")
-        else: 
+            self.likes.config(text = likes)
+
+        else:
+            likes -= 1
+            likes_list.remove(self.username)
+            f = open(post_name_path, 'w')
+            f.write('{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n'.format(who_posted, post_name, post_date, post_description, category_chosen, likes, likes_list))
+            for users in likes_list:
+                f.write(users + '\n')
+            f.close()              
             self.like_btn.config(text = "Like")
+            self.likes.config(text = likes)
 
     def add_favorites(self):
         if self.favorite_btn.cget("text") == "Add To Favorites":
@@ -255,21 +286,6 @@ class Edit():
         self.categories = Combobox(self.edit_post, values = self.category_list, width = 15, font = ('Roboto', 14))
         self.categories.place(x = 520, y = 280)
 
-#       Botão que adiciona uma categoria á imagem escolhida
-        self.add_category_btn = Button(self.edit_post, text = 'Add category', width = 15, height = 2, bd = 2, command = lambda: self.add_category(categories_chosen)).place(x = 520, y = 320)
-
-#       Botão que remove uma categoria
-        self.remove_category_btn = Button(self.edit_post, text = 'Remove category', width = 15, height = 2, bd = 2, command = self.remove_category).place(x = 520, y = 400)
-
-#       Lista que mostra as categorias escolhidas pelo utilizador
-        self.categories_chosen = Listbox(self.edit_post, width = 15, height = 6, font = ('Roboto', 14))
-        self.categories_chosen.place(x = 640, y = 320)
-
-        pos = 0 
-        for category in categories_chosen:
-            self.categories_chosen.insert(pos, category)
-            pos += 1
-
         self.save_changes_btn = Button(self.edit_post, text = 'Save Changes', bg = '#28942a', font = ("Roboto", 16), fg = 'white', bd = 0, command = lambda: self.save_changes(path, who_posted))
         self.save_changes_btn.place(x = 640, y = 500)
 
@@ -326,7 +342,8 @@ class Edit():
     def save_changes(self, path, who_posted):
         new_name = self.name_edit.get()
         new_description = self.description_edit.get('1.0','end-1c')
-        new_categories_chosen = self.categories_chosen.get('0', END)
+        new_description = self.description_edit.replace('\n',' ')
+        new_category_chosen = self.categories.get()
         os.chdir(path)
         if self.filename == '':
             for file in os.listdir(os.getcwd()):
@@ -340,9 +357,7 @@ class Edit():
                         os.remove(file)
                         new_file = new_name + '.txt'
                         f = open(new_file, 'x', encoding = 'utf-8')
-                        f.write('{0}\n{1}\n{2}\n{3}'.format(who_posted, new_name, date, new_description))
-                        for category in new_categories_chosen:
-                            f.write('\n'+str(category))
+                        f.write('{0}\n{1}\n{2}\n{3};\n'.format(who_posted, new_name, date, new_description, new_category_chosen))
                         f.close()
         else:
             for file in os.listdir(os.getcwd()):
@@ -356,9 +371,7 @@ class Edit():
                         os.remove(file)
                         new_file = new_name + '.txt'
                         f = open(new_file, 'x', encoding = 'utf-8')
-                        f.write('{0}\n{1}\n{2}\n{3};'.format(who_posted, new_name, date, new_description))
-                        for category in new_categories_chosen:
-                            f.write('\n'+str(category))
+                        f.write('{0}\n{1}\n{2}\n{3}\n{4}'.format(who_posted, new_name, date, new_description, new_category_chosen))
                         f.close()
                         messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
                 else:
@@ -367,3 +380,4 @@ class Edit():
                     messagebox.showinfo('Sucess!', 'Your post has been sucessfully edited! :)')
         for i in range(4):
             os.chdir('..')  # Voltar quatro pastas atras
+    

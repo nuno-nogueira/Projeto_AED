@@ -25,7 +25,6 @@ class Albums_Comments():
         self.comments_frame = Frame(self.f_my_album_comments, width=200, height=540)
         self.comments_frame.place(x=10, y=10)
 
-        print('hello')
         # Label Title
         self.comments_lbl = Label(self.f_my_album_comments, text='Comments', font=('Roboto', 22), bg='#fff')
         self.comments_lbl.place(x=0, y=0)

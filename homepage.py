@@ -99,9 +99,6 @@ class Main_App:
             self.bell_icon.image = icon4
             self.bell_icon.place(x = 870, y = 8)
 
-
-
-
 #           Botão em que faz com que o utilizador saia da conta com que está conectado e volte à página principal
             self.log_out = Button(self.profile_click_frame, text = 'Log Out', font = ('Roboto', 16), bg = 'lightgrey', bd = '3', relief = 'raised', width = 10, command = self.logging_out)
 
@@ -114,16 +111,6 @@ class Main_App:
 
 #           Botão que vai dar á página com todas as notificações recebidas
             self.all_notifications_btn = Button(self.notifications_click_frame, text = 'See All Notifications', font = ('Roboto', 12), bg = 'white', bd = '0', width = 18)
-
-#           Icone da lupa (FONTE - SITE FLATICON)
-#           icon = Image.open('..\\Projeto_AED\\images\\icons\\search_icon.png').resize((27,27))
-#           icon = ImageTk.PhotoImage(icon)
-#           search_icon = Button(image = icon, bg = '#333333', bd = 0)
-#           search_icon.image = icon
-#           search_icon.place( x = 185, y = 15)
-
-#           Barra de pesquisa
-#           search = Entry(nav_bar, bg = '#E0E0E0', bd = 0, font =('Roboto', 14), width = 15).place(x = 220, y = 15)
         
         def home_btn(self, homepage_canvas):
             '''
@@ -253,26 +240,26 @@ class Main_App:
 #           --- Frame para Button 'My Albums' -----------------
             self.frame_myalbums= Frame(self.tl, width=200, height=60, bg='pink')
             self.frame_myalbums.place(x=0,y=350)
-            self.btn_myalbums= Button(self.frame_myalbums, text='My Albums', width=12, font=('Roboto, 16'),
+            self.btn_myalbums= Button(self.frame_myalbums, text='My Albums', width=12, font=('Roboto', 16),
                                  command=lambda:self.my_albums(self.tl, self.username))
             self.btn_myalbums.place(x=20,y=15)
 
 #           --- Frame para Button 'Following' -----------------
             self.frame_following= Frame(self.tl, width=200, height=60, bg='lightblue')
             self.frame_following.place(x=0,y=410)
-            self.lbl_following= Button(self.frame_following, text='Following', width=12, font=('Roboto, 16'),
+            self.lbl_following= Button(self.frame_following, text='Following', width=12, font=('Roboto', 16),
                                  command=lambda:self.my_albums(self.tl, self.username))
             self.lbl_following.place(x=20,y=15)
 
 #           --- Button '+ Add' -----------------------------------
-            self.add_content_btn = Button(self.homepage, text = '+  Add', width = 12, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 20), bd = 0, command = self.show_add_content_frame).place(x = 0, y = 600)
+            self.add_content_btn = Button(self.tl, text = '+  Add', width = 14, height = 1, bg = '#28942a', fg = 'white', font = ('Roboto', 18), bd = 0, command = self.show_add_content_frame).place(x = 0, y = 470)
 #           Frame que aparece quando o utilizador clica no botão '+ Add'
 #           Aparecem os botões de fazer um Post e criar um Album
-            self.add_content_frame = Frame(self.homepage, width = 186, height = 125, bg = '#28942a')
-            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, 
-                                   command = lambda: self.add_post_frame(self.homepage, self.username, window))
-            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 16),fg = 'white', bd = 0, width = 15, height = 2, 
-                                    command = lambda: self.create_album_frame(self.homepage, self.username, window))
+            self.add_content_frame = Frame(self.tl, width = 202, height = 150, bg = '#28942a')
+            self.add_post = Button(self.add_content_frame, text = 'Add a Post', bg = '#28942a', font = ('Roboto', 14),fg = 'white', bd = 0, width = 20, 
+                                   command = lambda: Add_Post(window, username))
+            self.add_album = Button(self.add_content_frame, text = 'Create an Album', bg = '#28942a', font = ('Roboto', 14),fg = 'white', bd = 0, width = 20, 
+                                    command = lambda: Create_Album(window, username))
 
 
 
@@ -305,30 +292,10 @@ class Main_App:
                 self.add_post.place_forget()
                 self.add_album.place_forget()
             else:
-                self.add_content_frame.place(x = 0, y = 400)
-                self.add_post.place(x = 0, y = 0)
-                self.add_album.place(x = 0, y = 60)
+                self.add_content_frame.place(x = 0, y = 510)
+                self.add_post.place(x = 0, y = 5)
+                self.add_album.place(x = 0, y = 50)
 
-        def add_post_frame(self, homepage, username, window):
-            self.username = username
-            self.tl_add_photo = Toplevel(window)
-            self.tl_add_photo.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
-            self.tl_add_photo.title('myPhotos')
-            self.tl_add_photo.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
-            self.tl_add_photo.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
-            self.tl_add_photo.configure(bg = 'lightgrey')
-            Add_Post(self.tl_add_photo, homepage, username, window)
-            
-        def create_album_frame(self, homepage, username, window):
-            self.username = username
-
-            self.tl_create_album = Toplevel(window)
-            self.tl_create_album.geometry('1000x600+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
-            self.tl_create_album.title('myPhotos')
-            self.tl_create_album.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
-            self.tl_create_album.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
-            self.tl_create_album.configure(bg = 'lightgrey')
-            Create_Album(self.tl_create_album, self.username, window)
 
 #       ----------- My Albums Button -------------------------------------------------
 
@@ -408,9 +375,6 @@ class Main_App:
             # Add buttons to the frame_inside_canvas instead of directly to f_my_album
             # for row, i in enumerate(my_album_post):
 
-
-
-
             # Cada Post vai ser um Button
             for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
                 post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
@@ -449,10 +413,3 @@ class Main_App:
             # Update the scroll region when the size of the frame_inside_canvas changes
             frame_inside_canvas.update_idletasks()
             canvas.config(scrollregion=canvas.bbox("all"))
-
-#             Icone da lupa (FONTE - SITE FLATICON)
-            # icon = Image.open('..\\Projeto_AED\\images\\icons\\search_icon.png').resize((27,27))
-            # icon = ImageTk.PhotoImage(icon)
-            # search_icon = Button(image = icon, bg = '#333333', bd = 0)
-            # search_icon.image = icon
-            # search_icon.place( x = 185, y = 15)
