@@ -356,7 +356,7 @@ class Main_App:
             btn_destroy_frame.place(x=0, y=0)
             # Button Edit Album
             btn_edit_album = Button(self.f_my_album,text='Edit',
-                                    command=edit_album)
+                                    command=lambda:edit_album(username, album_folder, self.f_my_album))
             btn_edit_album.place(x=30,y=0)
 
             # Frame com Comentários

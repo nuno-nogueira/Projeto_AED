@@ -39,7 +39,7 @@ def edit_album(username, album_folder, f_my_album):
             #mudar o nome
             os.rename(original_path, new_path)
             edit_album_tl.destroy()
-            messagebox.showinfo('Album name changed. Reopen your Albums to confim.') 
+            messagebox.showinfo('Success.', 'Album name changed. Reopen your Albums to confim.') 
 
     def delete_album(album_folder):
         '''
@@ -57,7 +57,7 @@ def edit_album(username, album_folder, f_my_album):
 
         # Depois de eliminar o conteúdo, eliminar o Album
         os.rmdir(album_path)
-        messagebox.showinfo('Album deleted. Reopen your Albums to confim.') 
+        messagebox.showinfo('Success.','Album deleted. Reopen your Albums to confim.') 
 
 
     def delete_folder(folder_path):
