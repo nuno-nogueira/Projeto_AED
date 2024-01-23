@@ -8,10 +8,11 @@ from admins import admins
 from posts import Posts
 from dashboard import dashboard
 from add_content import Add_Post, Create_Album
+
+from notifications import show_notifications
 from search import *
 from pathlib import Path #pathlib is a module in the Python standard library that provides an object-oriented interface for working with filesystem paths. The Path class in pathlib represents a filesystem path and comes with various methods for file and directory manipulation.
-from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar 
-
+from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar  
 import os
 import datetime
 
@@ -36,6 +37,9 @@ class Main_App:
 #       Chama as classes Nav_Bar e Homepage, respetivamente
         self.Nav_Bar(self.nav_bar, self.homepage, self.tl, admin, self.username)
         self.Homepage(self.username, self.homepage, admin, self.tl, window)
+# ------------------------
+#         self.nav_bar = None
+#         self.Nav_Bar(self.nav_bar, self.homepage, self.tl, admin, self.username)
 
     class Nav_Bar:
         """
@@ -66,6 +70,17 @@ class Main_App:
 #               Uma welcome message só para os users
                 self.username_label = Label(self.nav_bar, text = 'Welcome ' + self.username + '!', font = ('Roboto', 16), bg = '#333', fg='white').place(x = 10, y = 18)
 
+# -------------------------------------------
+#         def search_user(self):
+#             username_to_search = self.user_search_entry.get()
+#             if username_to_search:
+#                 self.tl.destroy()  # Fechar a janela atual para exibir os resultados em uma nova janela
+#                 new_window = Tk()
+#                 new_window.geometry('1000x600+100-100')
+#                 new_window.title('Search Results')
+#                 new_window.resizable(0, 0)
+#                 Main_App(new_window, username_to_search, admin=False)
+
 # ---------- Icons NavBar ---------------------------------------------------------
             
 #           Icone da homepage (FONTE - SITE FLATICON)
@@ -95,7 +110,7 @@ class Main_App:
             icon4 = Image.open(Path('../Projeto_AED/images/icons/bell_icon.png')).resize((40,40))
             icon4 = ImageTk.PhotoImage(icon4)
             self.bell_icon = Button(self.nav_bar, image = icon4, bg = '#333333', bd = 0,
-                                    command= self.notifications_click)
+                                    command= lambda: self.notifications_click_tl(self.homepage))
             self.bell_icon.image = icon4
             self.bell_icon.place(x = 870, y = 8)
 
@@ -159,11 +174,18 @@ class Main_App:
                 if admin == True:
                     self.btn_tl_admin.place(x = 0, y = 45)
         
-        def notifications_click(self):
+        def notifications_click_tl(self,homepage):
             """
             Esta função cria um Frame que aparece quando o utilizador clica no icon das notificações \n
             Aparece a notificação mais recente e um botão que leva á página com acesso a todas as notificações
             """
+            self.tl_notifications_click = Toplevel(homepage)
+            self.tl_notifications_click.geometry('800x500+100-100') #Altera largura e altura da janela e posiciona a janela +/- no centro do ecrã
+            self.tl_notifications_click.title('Notifications')
+            self.tl_notifications_click.resizable(0,0) #Para não se poder redimensionar a janela (para os widgets não saírem do sítio)
+            self.tl_notifications_click.attributes('-topmost', 'true') #Isto faz com que o top level apareça por cima, pois ele por default aparece por baixo do top level da homepage
+            show_notifications(self.tl_notifications_click)
+            
             if self.notifications_click_frame.winfo_ismapped(): # Se a frame estiver na janela
                 self.notifications_click_frame.place_forget()
                 self.latest_notification.place_forget()
