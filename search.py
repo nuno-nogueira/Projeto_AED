@@ -7,11 +7,12 @@ import os
 from posts import Posts
 from albums_comments import Albums_Comments
 
-def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
+def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date, current_user):
     '''
     Abre uma Frame para mostrar resultados de pesquisa
     '''
     #Frame para mostrar resultados
+
     f_results= Frame(tl, width=600, height=700)
     f_results.place(x=200,y=60)
     btn_destroy_frame= Button(f_results, text=' X ', command=f_results.destroy)
@@ -72,7 +73,7 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
     
     #Abrir um Post na Treeview através do Button ''See Post''
     btn_select_searched_post= Button(f_results, text='See Post', font=('Roboto, 14'),
-                                command=lambda:open_tree_post(tree, f_results, get_selected_date))
+                                command=lambda:open_tree_post(tree, f_results, get_selected_date, current_user))
     btn_select_searched_post.place(x=100,y=500)
    
 
@@ -82,57 +83,47 @@ def clear_tree(tree):
         '''
         tree.delete(*tree.get_children())
 
-def open_tree_post(tree, f_results, get_selected_date):
+def open_tree_post(tree, f_results, get_selected_date, current_user):
         '''
-        
+        Abre um post da treeview
         '''
-        
-        selected_item = tree.selection()[0]
-        print(selected_item)
-        
+        selected_item = tree.selection()
+       
         if selected_item:
             user, category, date_str = tree.item(selected_item, "values")
    
             user_folder_path = os.path.join('users_photoalbums', user)
-            
+           
             #iterar dentro das folders até chegar ao post
             for album_folder in os.listdir(user_folder_path):
                 album_folder_full_path = os.path.join(user_folder_path, album_folder) #album path
-            
+           
                 if os.path.isdir(album_folder_full_path):
-                
+               
                     for post_folder in os.listdir(album_folder_full_path): #por cada post em cada album
                         post_folder_full_path = os.path.join(album_folder_full_path, post_folder) #post path
-                        
+                       
                         if os.path.isdir(post_folder_full_path): #se o post path for uma dir
                             for file in os.listdir(post_folder_full_path): # por item dentro de cada post
+                                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')): #se for uma img
+                                    #Parametro da Classe Posts:
+                                    image_path = os.path.join(post_folder_full_path, file) #criar path paa a img
+                                    img = Image.open(image_path) #obter a img
+                                    image = ImageTk.PhotoImage(img)
                                 if file.lower().endswith(('.txt')):
                                     if file.lower() == 'comments.txt':
                                         continue
                                     file_path = os.path.join(post_folder_full_path, file)
                                     with open(file_path, 'r') as read_file:
                                         check_file = read_file.readlines()
-                                    image_path = None #iniciar como none senão dá erro
+                                    # image_path = None #iniciar como none senão dá erro
                                     username=None
-                                    post_name_path=None
+                                    # path=None
                                     for line in check_file:
-                                        print(line)
-                                        print('date_str:', date_str)
                                         if line == date_str:
-                                            print('usreklvnsdlvsndlvksdlkvsdkvhnsdvhndvhn')  # Use strip to remove leading/trailing whitespaces
-                                            post_name_path = os.path.join(album_folder_full_path, file)
-                                            print(post_name_path)
-                                            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')): #se for uma img
-                                                
-                                                #Nãofunciona apartir daqui
-                                                #Para os parametros da Classe Posts: 
-                                                image_path = os.path.join(post_folder_full_path, file) #criar path paa a img
-                                                print(image_path)
-                                                img = Image.open(image_path) #obter a img
-                                                image = ImageTk.PhotoImage(img)
-                                                username= post_folder_full_path.split(os.path.sep)[1] #dividir a path e obter o nome do user. path.sep separa as /
-                                                print('aiaiiaiaia', username)
-                                                Posts(f_results, image_path, image, username, post_name_path)
+                                            path = os.path.join(post_folder_full_path, file)
+                                            username= post_folder_full_path.split(os.path.sep)[1] #dividir a path e obter o nome do user. path.sep separa as /
+                                            Posts(f_results, image_path, image, current_user)
                                                  
                                     
             

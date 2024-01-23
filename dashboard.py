@@ -189,7 +189,6 @@ class dashboard():
         read_file = file_all_posts.readlines()
         file_all_posts.close()
         my_categ_posts = []
-        print(selected_categ)
         for line in read_file:
             line_parts = line.split(';')
             print(line_parts[1])

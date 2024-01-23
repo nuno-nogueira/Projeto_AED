@@ -13,7 +13,7 @@ import datetime
 
 #       ----- Abrir um Post ao clicar no meu álbum de fotos ---------- 
 class Posts():
-    def __init__(self, f_my_album, image_path, image, username, post_name_path):
+    def __init__(self, f_my_album, image_path, image, username):
         ''' 
         Cada Post abre um TopLevel()
         '''
@@ -39,6 +39,7 @@ class Posts():
         # -----------DAR GOSTOS E FAVORITOS --------
 #       Para voltar uma pasta atras para depois encontrar o ficheiro .txt
         path = os.path.dirname(image_path)
+        print(path)
         files = []
         for  i in os.listdir(path): 
 #           Para encontrar o ficheiro comments.txt
@@ -136,6 +137,7 @@ class Posts():
             f = open(post_name_path, 'w')
             f.write('{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n'.format(who_posted, post_name, post_date, post_description, category_chosen, likes))
             for users in likes_list:
+                users = str(users)
                 f.write(users + '\n')
             f.close()              
             self.like_btn.config(text = "Dislike")
@@ -210,7 +212,7 @@ class Posts():
                 y_comment += 100
             
 class Edit():
-    def __init__(self, tl_my_post, who_posted, post_name, post_description, path, image):
+    def __init__(self, tl_my_post, who_posted, post_name, post_description, category_chosen, path, image):
         self.edit_post= Toplevel(tl_my_post)
         self.edit_post.geometry('900x600+100-100') 
         self.edit_post.title('MyPhotos')
@@ -328,8 +330,6 @@ class Edit():
             return
         new_name = self.name_edit.get()
         new_description = self.description_edit.get('1.0','end-1c')
-        if new_description.find('\n') != -1:
-            new_description = self.description_edit.replace('\n',' ')
         new_category_chosen = self.categories.get()
         os.chdir(path) # Posicionar-se na pasta do post
         if self.filename == '': # Se o utilizador não tiver escolhido uma imagem nova:

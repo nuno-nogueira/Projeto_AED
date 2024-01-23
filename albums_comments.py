@@ -83,11 +83,8 @@ class Albums_Comments():
             comments_list = [line.strip('\n') for line in f.readlines()] # Para remover line breaks de cada item na lista
             f.close()
             comment = [line.strip(';') for line in comments_list]
-#           Listar os comentários
-            comment_author = [] # Armazenar a lista de quem escreveu os comentários
-            dates = [] # Armazenar as horas em que cada comentário foi feito
-            comments = [] # Armazenar a lista de comentários escritos
 
+            
             y_author = 170
             y_date = 172
             y_comment = 200

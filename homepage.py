@@ -54,7 +54,7 @@ class Main_App:
 
 #           Frame onde aparece os botões de 'See Profile' e 'Log Out'
 #           Aparecem quando o utilizador clica no botão com o icone do perfil
-            self.profile_click_frame = Frame(self.homepage, width = 200, height = 85, bg = 'white')
+            self.profile_click_frame = Frame(self.homepage, width = 200, height = 90, bg = 'white')
 
 #           Frame onde aparece a notificação mais recente e um botão que vai dar á página com todas as notificações
 #           Aparecem quando o utilizador clica no botão com o icone da notificação
@@ -70,26 +70,7 @@ class Main_App:
 #               Uma welcome message só para os users
                 self.username_label = Label(self.nav_bar, text = 'Welcome ' + self.username + '!', font = ('Roboto', 16), bg = '#333', fg='white').place(x = 10, y = 18)
 
-# -------------------------------------------
-#         def search_user(self):
-#             username_to_search = self.user_search_entry.get()
-#             if username_to_search:
-#                 self.tl.destroy()  # Fechar a janela atual para exibir os resultados em uma nova janela
-#                 new_window = Tk()
-#                 new_window.geometry('1000x600+100-100')
-#                 new_window.title('Search Results')
-#                 new_window.resizable(0, 0)
-#                 Main_App(new_window, username_to_search, admin=False)
-
 # ---------- Icons NavBar ---------------------------------------------------------
-            
-#           Icone da homepage (FONTE - SITE FLATICON)
-            icon = Image.open('./images/icons/homepage_icon.png').resize((40,40))
-            icon = ImageTk.PhotoImage(icon)
-            self.homepage_icon = Button(self.nav_bar, image = icon, bg = '#333333', bd = 0,
-                                        command= self.home_btn)
-            self.homepage_icon.image = icon
-            self.homepage_icon.place(x = 380, y = 7)
 
 #           Icone do perfil (FONTE - SITE FLATICON)
             icon2 = Image.open(Path('../Projeto_AED/images/icons/profile_icon.png')).resize((40,40))
@@ -256,7 +237,7 @@ class Main_App:
             select_button.place(x=95, y=200)
             # Button para pesquisar
             self.btn_search = Button(self.f_search, width=20, height=2, text='Search for Posts', bg='lightblue',
-                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date))
+                                    command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.selected_date, self.username))
             self.btn_search.place(x=20, y=240)
             
  
@@ -413,55 +394,6 @@ class Main_App:
                                         command=lambda  img=resized_photo, image_path=image_path: Posts(frame_myalbum_posts, image_path, img, self.username))
                 btn_my_post.grid(column=row % 3,  row=row // 3, padx=20, pady=10)
 
-           
-    def open_user_frame(self, username, tl):
-            '''
-            Verifica se o user existe 
-            '''
-            self.search_value = self.search_entry.get()
-            # --- Fazer os Álbums aparecer:
-            # Meter numa variável a diretoria/pasta dos álbums do user
-            print('hi')
-            print(self.search_value)
-            user_folder = os.path.join("users_photoalbums", self.search_value)
-            print(user_folder)
-            if os.path.exists(user_folder):
-                user_album_frame = Frame(tl, width=600, height=540)
-                user_album_frame.place(x=300, y=60)
-                user_album_frame.lift()
-
-            # Listar os álbums
-            user_album_folders = []
-            for i in os.listdir(user_folder): #Por cada folder
-                full_path = os.path.join(user_folder, i) #Está a juntar a diretoria user com a diretoria álbum em vez de usar concatenação
-                if os.path.isdir(full_path): #se for uma folder
-                    user_album_folders.append(i) #Adiciona o nome desse album á lista
-            
-            for idx, user_album_folder in enumerate(user_album_folders):
-                # CalculaR row and column apartir do index
-                row = idx // 4
-                col = idx % 4
-                btn_my_album = Button(user_album_frame, text=user_album_folder, bg='#f8d775', width=18, height=5,
-                                    command=lambda tl=tl, username=username, folder=user_album_folder: self.open_user_album_frame(tl, folder, username))
-                btn_my_album.grid(row=row, column=col, padx=30, pady=30)
-
-# ---------------------------------------------------------------------------
-
-    def open_user_album_frame(self, tl, user_album_folder, username):
-            '''
-            Cada Álbum abre uma nova Frame com Publicações e Comentários do Álbum
-            '''
-            
-            self.user_album_folder=user_album_folder#para poder usar no file albums_comments
-            # Frame com Publicações
-            self.f_my_album= Frame(tl, width=800, height=600, bg='pink')
-            self.f_my_album.place(x=200,y=60)
-            # Frame com Comentários
-            self.f_my_album_comments= Frame(tl, width=200, height=540, bg='blue')
-            self.f_my_album_comments.place(x=800,y=60)
-            Albums_Comments(self.f_my_album_comments, self.user_album_folder, self.username)
-
-            
 
 #           ----- Fazer os Posts aparecerem na Frame do Álbum ---------- 
             
@@ -501,10 +433,6 @@ class Main_App:
             # Adjust the placement of the scrollbar
             scrollbar.place(x=600, y=0, height=600)
   
-
-
-
-
             # Cada Post vai ser um Button
             for row, i in enumerate(my_album_post): #enumerate cria uma tuple que contém um index 'row' e o correspondente valor 'i' que pertence ao my_album_post.
                 post_path = os.path.join(album_path, i) #post_path é o conjunto de paths dos posts do álbum p.e: post_path = ''..\\my_album\\rose_post'' + ''...\\my_album\\cake_post'' + ...
