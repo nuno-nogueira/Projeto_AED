@@ -8,6 +8,7 @@ class dashboard():
         User pode consultar na Dashboard:
         - Número total de Posts
         - Número de Posts por categoria
+        - Número de Comentários por Álbum OU por Post
         '''
         self.tl_dashboard = tl_dashboard
         self.username=username
@@ -67,6 +68,7 @@ class dashboard():
         #Label mostrar número de Comentários por Álbum
         self.lbl_number_comments_albums= Label(self.tl_dashboard, text=('0'))
         self.lbl_number_comments_albums.place(x=500, y=200)
+        
 
         # --- Por Post:
 

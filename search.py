@@ -31,7 +31,7 @@ def func_search_results_window(tl, search_entry, lbox_categ, get_selected_date):
     read_file_all_posts=file_all_posts.readlines()
     file_all_posts.close()
     search_value = search_entry.get() #para buscar o valor de search_entry que já está definida como uma String no ficheiro Homepage.py
-    
+     
     # ---- Pesquisa de Posts -----------
     
     tree.delete()

@@ -235,7 +235,7 @@ class Main_App:
                                     command=lambda: func_search_results_window(tl, self.search_entry, self.lbox_categ, self.get_selected_date))
             self.btn_search.place(x=20, y=240)
             
-
+ 
 #           --- Frame para Button 'My Albums' -----------------
             self.frame_myalbums= Frame(self.tl, width=200, height=60, bg='pink')
             self.frame_myalbums.place(x=0,y=350)

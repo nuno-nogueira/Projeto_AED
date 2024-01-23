@@ -9,7 +9,7 @@ from tkcalendar import DateEntry # Inserir no terminal: pip install tkcalendar
 import shutil # Módulo para passar as imagens de uma diretoria qualquer para a pasta dos posts
 import os
 import datetime
-
+ 
 
 #       ----- Abrir um Post ao clicar no meu álbum de fotos ---------- 
 class Posts():
