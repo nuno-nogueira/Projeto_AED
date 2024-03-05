@@ -50,11 +50,14 @@ class App():
         self.leave_app_btn.image = icon
         self.leave_app_btn.place( x = 860, y = 190)
         self.btn_leave= Button(self.window, text='Leave', command = self.leave_app)
+        self.teste_teste_aa = Button(self.window, text = '1 2 3')
+        self.teste_teste_bb = Label(self.window, text = 'adsjdd')
 
     def go_to_sign_up(self):
         """
         Esta função leva o utilizador á página para criar uma conta
         """
+        print('Hello World!!!')
         Sign_Up(self.window)
 
 
