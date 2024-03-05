@@ -46,6 +46,8 @@ class App():
 
         # icon = Image.open(Path('../Projeto_AED/images/icons/exit.png')).resize((50,50))
         icon = ImageTk.PhotoImage(icon)
+        self.abcdefghij = Frame(self.window, width = 1000, height = 600, bg = '#fff')
+
         self.leave_app_btn = Button(self.window, image = icon, bd = 0, bg= 'white', command = self.leave_app)
         self.leave_app_btn.image = icon
         self.leave_app_btn.place( x = 860, y = 190)
@@ -58,6 +60,7 @@ class App():
         Esta função leva o utilizador á página para criar uma conta
         """
         print('Hello World!!!')
+        print('teste teste teste')
         Sign_Up(self.window)
 
 
