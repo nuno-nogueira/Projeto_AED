@@ -44,6 +44,7 @@ class App():
         icon_path = Path(__file__).resolve().parent / 'images/icons/exit.png'
         icon = Image.open(icon_path).resize((50, 50))
 
+        self.teste = Label(self.window, text = '213131')
         # icon = Image.open(Path('../Projeto_AED/images/icons/exit.png')).resize((50,50))
         icon = ImageTk.PhotoImage(icon)
         self.abcdefghij = Frame(self.window, width = 1000, height = 600, bg = '#fff')
@@ -61,6 +62,7 @@ class App():
         """
         print('Hello World!!!')
         print('teste teste teste')
+        print('12313123')
         Sign_Up(self.window)
 
 
